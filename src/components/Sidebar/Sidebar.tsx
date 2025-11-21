@@ -1,0 +1,18 @@
+import styles from './Sidebar.module.css';
+import Button from '../common/Button/Button';
+type Props = {
+
+}
+function Sidebar({ }: Props) {
+    return (<>
+        <div className={styles.sideBar}>
+            <img className={styles.logo} src="/plataformarar.png" alt="Logo ARAR" />
+            <div className={styles.menu}>
+                <span className={styles.subline}>Bienvenido</span>
+                <Button label="Home" imgSrc={"dashboard-svgrepo-com.svg"}></Button>
+                <Button label="Juegos" imgSrc={"game-controller-svgrepo-com.svg"}></Button>
+            </div>
+        </div>
+    </>)
+}
+export default Sidebar;

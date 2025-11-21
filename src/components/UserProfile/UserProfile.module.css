@@ -1,0 +1,17 @@
+.container {
+    display: flex;
+    gap: 3px;
+    flex-direction: row-reverse;
+    align-items: center;
+    margin-right: 5%;
+}
+
+.avatar {
+    width: 7rem;
+    height: auto;
+    border-radius: 50%;
+}
+
+.greeting {
+    font-size: 2rem;
+}

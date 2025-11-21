@@ -2,13 +2,13 @@
 //import LoginView from "./views/LoginView";
 //import RegisterView from "./views/RegisterView";
 //import Dashboard from "./views/Dashboard";
-
+import Base from "./layout/BaseLayout/Base";
 import LoginSignUpView from "./views/LoginSignUpView";
 
 function App() {
   return (
     <div>
-      <LoginSignUpView />
+      <Base></Base>
     </div>
 
     /* <Router>
