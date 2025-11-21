@@ -1,5 +1,5 @@
 import styles from "./Sidebar.module.css";
-import Button from "../common/Button/Button";
+import Button from "../../shared/Button";
 interface Props {}
 function Sidebar(props: Props) {
   return (
@@ -8,11 +8,8 @@ function Sidebar(props: Props) {
         <img className={styles.logo} src="/plataformarar.png" alt="Logo ARAR" />
         <div className={styles.menu}>
           <span className={styles.subline}>Bienvenido</span>
-          <Button label="Home" imgSrc={"dashboard-svgrepo-com.svg"}></Button>
-          <Button
-            label="Juegos"
-            imgSrc={"game-controller-svgrepo-com.svg"}
-          ></Button>
+          <Button label="Home" imgSrc={"dashboard-svgrepo-com.svg"} />
+          <Button label="Juegos" imgSrc={"game-controller-svgrepo-com.svg"} />
         </div>
       </div>
     </>

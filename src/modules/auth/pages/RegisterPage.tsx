@@ -34,7 +34,7 @@ function RegisterPage() {
     const newPassword = e.target.value;
     setUser({ ...user, Password: newPassword });
     const message = validPassword(newPassword);
-    let mappedMessages = message.map(([msg, isValid]) => ({
+    const mappedMessages = message.map(([msg, isValid]) => ({
       message: msg,
       isValid,
     }));
@@ -106,7 +106,7 @@ function RegisterPage() {
                   margin: "0",
                 }}
               >
-                {(err.isValid ? "\u2714" : "\u2716") + " - " + err.message}
+                {(err.isValid ? "\u2716" : "\u2714") + " - " + err.message}
               </li>
             ))}
           </List>

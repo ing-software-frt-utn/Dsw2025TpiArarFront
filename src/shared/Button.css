@@ -1,4 +1,4 @@
-.Button {
+Button {
   width: 100%;
   padding: 1em 1em;
   box-sizing: border-box;
@@ -12,7 +12,7 @@
   gap: 5px;
 }
 
-.Button:hover {
+Button:hover {
   background-color: #606060;
   cursor: pointer;
 }

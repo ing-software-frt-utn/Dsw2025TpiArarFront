@@ -1,25 +1,18 @@
-//import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-//import LoginView from "./views/LoginView";
-//import RegisterView from "./views/RegisterView";
-//import Dashboard from "./views/Dashboard";
-import Base from "./layout/BaseLayout/Base";
-import LoginSignUpView from "./views/LoginSignUpView";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+//import Base from "./layout/BaseLayout/Base";
+import LoginPage from "./modules/auth/pages/LoginPage";
+import RegisterPage from "./modules/auth/pages/RegisterPage";
 
 function App() {
   return (
-    <div>
-      <Base></Base>
-    </div>
-
-    /* <Router>
+    <Router>
       <Routes>
-        <Route path="/login" element={<LoginView />} />
-        <Route path="/register" element={<RegisterView />} />
-        <Route path="/dashboard" element={<Dashboard user={user} />} />
-        <Route path="*" element={<LoginView />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="*" element={<LoginPage />} />
       </Routes>
-    </Router> */
+    </Router>
   );
 }
-
+//<Route path="/dashboard" element={<Dashboard user={user} />} />
 export default App;

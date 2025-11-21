@@ -5,6 +5,7 @@ import "./LoginTemplate.css";
 import { Link } from "react-router-dom";
 import Popup from "../../../shared/Popup";
 import { validPassword } from "../helper/passwordValidation";
+import Form from "../../../shared/Form";
 import FieldText from "../../../shared/FieldText";
 import List from "../../../shared/List";
 import Button from "../../../shared/Button";
@@ -54,20 +55,21 @@ function LoginTemplate() {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit}>
         <img src={logo} alt="Logo" className="logo" />
         <h1>PLATAFORMA ARAR</h1>
         <h2>INICIAR SESIÓN</h2>
-
-        <FieldText
-          type="email"
-          id="email"
-          name="Email"
-          value={user.Email}
-          onChange={handleUsernameInput}
-          label="Correo Electrónico"
-          isRequired
-        ></FieldText>
+        <div>
+          <FieldText
+            type="email"
+            id="email"
+            name="Email"
+            value={user.Email}
+            onChange={handleUsernameInput}
+            label="Correo Electrónico"
+            isRequired
+          />
+        </div>
         <div>
           <FieldText
             type="password"
@@ -89,17 +91,18 @@ function LoginTemplate() {
                   margin: "0",
                 }}
               >
-                {(err.isValid ? "\u2714" : "\u2716") + " - " + err.message}
+                {(err.isValid ? "\u2716" : "\u2714") + " - " + err.message}
               </li>
             ))}
           </List>
         </div>
-
-        <Button type="submit" label="Enviar"></Button>
-        <p>
-          ¿No tienes una cuenta? <Link to="/register">Registrate</Link>
-        </p>
-      </form>
+        <div>
+          <Button type="submit" label="Enviar"></Button>
+          <p>
+            ¿No tienes una cuenta? <Link to="/register">Registrate</Link>
+          </p>
+        </div>
+      </Form>
 
       {error && <Popup message={error} onClose={() => setError("")} />}
 
