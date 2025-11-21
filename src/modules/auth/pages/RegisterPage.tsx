@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { register } from "../services/authService";
-import "../styles/login.css";
-import logo from "../assets/images/plataformarar.png";
+import "../components/LoginTemplate.css";
+import logo from "../../../assets/images/plataformarar.png";
 import { Link } from "react-router-dom";
-import ErrorPopup from "../components/Popup";
-import FieldText from "../components/common/FieldText";
-import { validPassword } from "../utils/passwordValidation";
-import List from "../components/common/List";
+import Button from "../../../shared/Button";
+import ErrorPopup from "../../../shared/Popup";
+import FieldText from "../../../shared/FieldText";
+import { validPassword } from "../helper/passwordValidation";
+import List from "../../../shared/List";
 
-function RegisterView() {
+function RegisterPage() {
   const [error, setError] = useState<string>("");
   const [user, setUser] = useState({
     Apellido: "",
@@ -121,7 +122,7 @@ function RegisterView() {
           isRequired
         ></FieldText>
 
-        <button type="submit">Registrarse</button>
+        <Button type="submit" label="Registrarse" />
         <p>
           ¿Ya tienes una cuenta? <Link to="/login">Inicia sesión</Link>
         </p>
@@ -132,4 +133,4 @@ function RegisterView() {
   );
 }
 // {...passwordErrors.length > 0 ? <p>La contraseña no cumple con los requisitos:</p> : ""}
-export default RegisterView;
+export default RegisterPage;

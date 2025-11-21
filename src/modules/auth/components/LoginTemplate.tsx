@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { login } from "../services/authService";
-import logo from "../assets/images/plataformarar.png";
-import "../styles/login.css";
+import logo from "../../../assets/images/plataformarar.png";
+import "./LoginTemplate.css";
 import { Link } from "react-router-dom";
-import Popup from "../components/Popup";
-import { validPassword } from "../utils/passwordValidation";
-import FieldText from "../components/common/FieldText";
-import List from "../components/common/List";
-function LoginPage() {
+import Popup from "../../../shared/Popup";
+import { validPassword } from "../helper/passwordValidation";
+import FieldText from "../../../shared/FieldText";
+import List from "../../../shared/List";
+import Button from "../../../shared/Button";
+
+function LoginTemplate() {
   const [error, setError] = useState<string>("");
   const [satisfactorio, setSatisfactorio] = useState<string>("");
   const [user, setUser] = useState({
@@ -16,7 +18,7 @@ function LoginPage() {
   });
 
   const [passwordErrors, setPasswordError] = useState<
-    { message: string; isValid: Boolean }[]
+    { message: string; isValid: boolean }[]
   >([]);
 
   const handleUsernameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +95,7 @@ function LoginPage() {
           </List>
         </div>
 
-        <button type="submit">Enviar</button>
+        <Button type="submit" label="Enviar"></Button>
         <p>
           ¿No tienes una cuenta? <Link to="/register">Registrate</Link>
         </p>
@@ -108,4 +110,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default LoginTemplate;

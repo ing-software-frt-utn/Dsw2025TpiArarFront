@@ -1,9 +1,9 @@
 import "../styles/login.css";
-import { login, register } from "../services/authService";
+import { login, register } from "../modules/auth/services/authService";
 import { validPassword } from "../utils/passwordValidation";
-import FieldText from "../components/common/FieldText";
+import FieldText from "../shared/FieldText";
 //import List from "../components/common/List";
-import PopUp from "../components/Popup";
+import PopUp from "./Popup";
 import logo from "../assets/images/plataformarar.png";
 import user_icon from "../assets/images/person.png";
 import email_icon from "../assets/images/email.png";
@@ -67,7 +67,7 @@ const LoginSignUpView = () => {
     } else {
       //Si la contraseña no es válida, se bloquea el submit.
       const isPasswordValid = validPassword(user.Password).every(
-        ([_, isValid]) => isValid === false
+        ([_, isValid]) => isValid === false,
       );
 
       if (!isPasswordValid) {
@@ -88,7 +88,7 @@ const LoginSignUpView = () => {
 
       if (data.ok && data.id) {
         setSatisfactorio(
-          "Usuario registrado con éxito. Ahora puedes iniciar sesión."
+          "Usuario registrado con éxito. Ahora puedes iniciar sesión.",
         );
         //Mueve a la vista de login después de un registro exitoso
         setAction("Iniciar Sesión");

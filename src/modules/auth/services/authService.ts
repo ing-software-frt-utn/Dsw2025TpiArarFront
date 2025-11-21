@@ -1,13 +1,12 @@
-import { API_URL } from "../config";
-
-export const register = async (credentials: {
+export interface RegisterCretendial {
   Username: string;
   Password: string;
   Email: string;
   Nombre: string;
   Apellido: string;
   FechaNacimiento: string;
-}) => {
+}
+export const register = async (credentials: RegisterCretendial) => {
   try {
     console.log(credentials);
     const credentialsToSend = {
@@ -16,7 +15,7 @@ export const register = async (credentials: {
         ? new Date(credentials.FechaNacimiento).toISOString().split("T")[0]
         : "",
     };
-    const response = await fetch(`${API_URL}/auth/register`, {
+    const response = await fetch(`api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(credentialsToSend),
@@ -44,7 +43,7 @@ export const login = async (credentials: {
   Password: string;
 }) => {
   try {
-    const response = await fetch(`${API_URL}/auth/login`, {
+    const response = await fetch(`api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(credentials),

@@ -6,6 +6,7 @@ export interface FieldProps {
   isRequired?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
+  label?: string;
 }
 import React from "react";
 function FieldText(props: FieldProps) {
