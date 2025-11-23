@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { register } from "../services/authService";
-import "../components/LoginTemplate.css";
+//import "../components/LoginTemplate.css";
 import logo from "../../../assets/images/plataformarar.png";
 import { Link } from "react-router-dom";
 import Button from "../../../shared/Button";

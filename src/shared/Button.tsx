@@ -1,25 +1,32 @@
-import "./Button.css";
 type Props = {
   label: string;
   imgSrc?: string;
   onClick?: () => void;
   type?: "submit" | "reset";
+  className?: string;
 };
 
 function Button(props: Props) {
   return (
-    <div>
+    <>
       {props.imgSrc ? (
-        <button onClick={props.onClick}>
+        <button className="" onClick={props.onClick}>
           <img src={props.imgSrc} alt="Icono del botón" />
           {props.label}
         </button>
       ) : (
-        <button type={props.type} onClick={props.onClick}>
+        <button
+          className={
+            props.className ||
+            "rounded-full h-full w-full blur-sm border border-gray-300 blur hover:blur-none"
+          }
+          type={props.type}
+          onClick={props.onClick}
+        >
           {props.label}
         </button>
       )}
-    </div>
+    </>
   );
 }
 export default Button;

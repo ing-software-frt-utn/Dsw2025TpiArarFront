@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { login } from "../services/authService";
 import logo from "../../../assets/images/plataformarar.png";
-import "./LoginTemplate.css";
 import { Link } from "react-router-dom";
 import Popup from "../../../shared/Popup";
 import { validPassword } from "../helper/passwordValidation";
@@ -9,7 +8,7 @@ import Form from "../../../shared/Form";
 import FieldText from "../../../shared/FieldText";
 import List from "../../../shared/List";
 import Button from "../../../shared/Button";
-
+import "./LoginTemplate.css";
 function LoginTemplate() {
   const [error, setError] = useState<string>("");
   const [satisfactorio, setSatisfactorio] = useState<string>("");
@@ -54,13 +53,21 @@ function LoginTemplate() {
   };
 
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <img src={logo} alt="Logo" className="logo" />
-        <h1>PLATAFORMA ARAR</h1>
-        <h2>INICIAR SESIÓN</h2>
-        <div>
+    <div>
+      <img className="col-auto justify-content-center" src={logo} alt="Logo" />
+      <h1 className="text-cyan-500 bg-sky-300 text-center">PLATAFORMA ARAR</h1>
+      <h2 className="text-center">INICIAR SESIÓN</h2>
+      <Form
+        className="px-4 py-3 rounded-full bg-white-500 grid row-span-2 gap-4"
+        onSubmit={handleSubmit}
+      >
+        <div className="grid row-span-2 gap-4">
+          <label htmlFor="email" className="text-red-300 ">
+            Email ss
+          </label>
+
           <FieldText
+            className="w-1/2"
             type="email"
             id="email"
             name="Email"
@@ -70,8 +77,12 @@ function LoginTemplate() {
             isRequired
           />
         </div>
-        <div>
+        <div className="grid row-span-3 gap-4">
+          <label htmlFor="password" className="font-sans m-4 w-96">
+            Contraseña
+          </label>
           <FieldText
+            className="text-lime-300"
             type="password"
             id="password"
             name="Password"
@@ -81,35 +92,36 @@ function LoginTemplate() {
             isRequired
           />
 
-          <List>
+          <List order="Unordered">
             {passwordErrors.map((err, index) => (
               <li
                 key={index}
-                style={{
-                  color: err.isValid ? "red" : "green",
-                  fontSize: "0.8em",
-                  margin: "0",
-                }}
+                className={`
+                  text-lime-500
+                  text-[0.8em]
+                  m-4
+                  p-2
+                  text-left
+                `}
               >
                 {(err.isValid ? "\u2716" : "\u2714") + " - " + err.message}
               </li>
             ))}
           </List>
         </div>
-        <div>
+        <div className="text-center space-y-2 sm:text-left">
           <Button type="submit" label="Enviar"></Button>
-          <p>
-            ¿No tienes una cuenta? <Link to="/register">Registrate</Link>
-          </p>
         </div>
       </Form>
-
+      <p>
+        ¿No tienes una cuenta? <Link to="/register">Registrate</Link>
+      </p>
       {error && <Popup message={error} onClose={() => setError("")} />}
 
       {satisfactorio && (
         <Popup message={"Bienvenid@"} onClose={() => setSatisfactorio("")} />
       )}
-    </>
+    </div>
   );
 }
 

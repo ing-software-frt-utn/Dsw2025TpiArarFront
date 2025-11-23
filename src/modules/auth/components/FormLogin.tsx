@@ -37,7 +37,13 @@ function FormLogin(props: FormLoginProps) {
     setPasswordError(mappedMessages);
   };
   return (
-    <Form onSubmit={props.onSubmit}>
+    <Form
+      className={`
+        bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500
+        flex flex-col
+        gap-4`}
+      onSubmit={props.onSubmit}
+    >
       <div>
         <FieldText
           type="email"
@@ -60,7 +66,7 @@ function FormLogin(props: FormLoginProps) {
           isRequired
         />
 
-        <List>
+        <List order="Unordered">
           {passwordErrors.map((err, index) => (
             <li
               key={index}

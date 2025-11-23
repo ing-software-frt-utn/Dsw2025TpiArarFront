@@ -7,11 +7,13 @@ export interface FieldProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   label?: string;
+  className?: string;
 }
 import React from "react";
 function FieldText(props: FieldProps) {
   return (
     <input
+      className={props.className}
       type={props.type || "text"}
       id={props.id}
       name={props.name}
