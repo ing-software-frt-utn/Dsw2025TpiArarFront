@@ -1,3 +1,5 @@
+import React from "react";
+import TextField from "../../../shared/TextField";
 export interface FieldProps {
   type?: string;
   name: string;
@@ -7,22 +9,20 @@ export interface FieldProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   label?: string;
-  className?: string;
 }
-import React from "react";
-function FieldText(props: FieldProps) {
+function TextFieldAuth(props: FieldProps) {
   return (
-    <input
-      className={props.className}
-      type={props.type || "text"}
-      id={props.id}
+    <TextField
+      type={props.type}
       name={props.name}
       value={props.value}
+      id={props.id}
+      isRequired={props.isRequired}
       onChange={props.onChange}
-      required={props.isRequired}
       placeholder={props.placeholder}
+      label={props.label}
+      className="text-field-auth"
     />
   );
 }
-
-export default FieldText;
+export default TextFieldAuth;

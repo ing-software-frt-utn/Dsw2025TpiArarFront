@@ -1,6 +1,6 @@
 import React from "react";
 import Form from "../../../shared/Form";
-import FieldText from "../../../shared/FieldText";
+import TextField from "./TextFieldAuth";
 import List from "../../../shared/List";
 import Button from "../../../shared/Button";
 import { Link } from "react-router-dom";
@@ -45,7 +45,7 @@ function FormLogin(props: FormLoginProps) {
       onSubmit={props.onSubmit}
     >
       <div>
-        <FieldText
+        <TextField
           type="email"
           id="email"
           name="Email"
@@ -56,7 +56,7 @@ function FormLogin(props: FormLoginProps) {
         />
       </div>
       <div>
-        <FieldText
+        <TextField
           type="password"
           id="password"
           name="Password"

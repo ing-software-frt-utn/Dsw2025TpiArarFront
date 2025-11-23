@@ -21,9 +21,17 @@ function List(props: ListProps) {
     }
   }
   if (props.order === "Ordered") {
-    return <ol className={props.className}>{props.children}</ol>;
+    return (
+      <ol className={props.className?.toString() + "list-base"}>
+        {props.children}
+      </ol>
+    );
   } else if (props.order === "Unordered") {
-    return <ul className={props.className}>{props.children}</ul>;
+    return (
+      <ul className={props.className?.toString() + "list-base"}>
+        {props.children}
+      </ul>
+    );
   }
 }
 

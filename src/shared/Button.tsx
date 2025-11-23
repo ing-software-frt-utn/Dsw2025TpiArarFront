@@ -2,7 +2,7 @@ type Props = {
   label: string;
   imgSrc?: string;
   onClick?: () => void;
-  type?: "submit" | "reset";
+  type?: "button" | "submit" | "reset";
   className?: string;
 };
 
@@ -16,10 +16,7 @@ function Button(props: Props) {
         </button>
       ) : (
         <button
-          className={
-            props.className ||
-            "rounded-full h-full w-full blur-sm border border-gray-300 blur hover:blur-none"
-          }
+          className={props.className?.toString() + " button-base"}
           type={props.type}
           onClick={props.onClick}
         >
