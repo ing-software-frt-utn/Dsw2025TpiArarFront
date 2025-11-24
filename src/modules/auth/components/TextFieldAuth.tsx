@@ -9,6 +9,7 @@ export interface FieldProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   label?: string;
+  className?: string;
 }
 function TextFieldAuth(props: FieldProps) {
   return (
@@ -21,7 +22,7 @@ function TextFieldAuth(props: FieldProps) {
       onChange={props.onChange}
       placeholder={props.placeholder}
       label={props.label}
-      className="text-field-auth"
+      className={props.className?.toString() + " text-field-auth "}
     />
   );
 }

@@ -54,7 +54,7 @@ function LoginTemplate() {
   };
 
   return (
-    <div className=" bg-gray-100 rounded-[2vw] p-4 md:p-3 ">
+    <div className="bg-gray-100 rounded-[2vw] p-4 md:p-3 ">
       <div className="flex justify-between items-center">
         <h1 className="text-center text-2xl font-bold underline flex-1 ">
           Bienvenido a
@@ -66,7 +66,7 @@ function LoginTemplate() {
         onSubmit={handleSubmit}
       >
         <div className="grid grid-row-2 row-span-2 grid-cols-1 p-3">
-          <div className="grid row-span-3 gap-4">
+          <div className="flex flex-col gap-4">
             <label htmlFor="email" className="text-black font-sans m-2 w-96">
               Email
             </label>
@@ -79,10 +79,11 @@ function LoginTemplate() {
               onChange={handleUsernameInput}
               label="Correo Electrónico"
               isRequired
+              className="lowercase"
             />
           </div>
-          <div className="grid row-span-3 gap-4">
-            <label htmlFor="password" className="font-sans m-2 w-96">
+          <div className="flex flex-col gap-4">
+            <label htmlFor="password" className="flex-none font-sans m-2 w-96">
               Contraseña
             </label>
             <TextFieldAuth
@@ -102,17 +103,7 @@ function LoginTemplate() {
             />
           </div>
         </div>
-      </Form>
-      <div className="flex justify-center space-x-4 space-y-4 sm:text-left">
-        <div>
-          <Button
-            className="py-2 px-4 button-primary"
-            type="submit"
-            label="Iniciar Sesión"
-            onClick={() => console.log("ejemplo")}
-          />
-        </div>
-        <div>
+        <div className="flex justify-center space-x-4 space-y-4 sm:text-left">
           <Link to="/register">
             <Button
               className="py-2 px-4 button-secundary"
@@ -120,13 +111,24 @@ function LoginTemplate() {
               label="Registrarse"
             />
           </Link>
+          <div>
+            <Button
+              className="py-2 px-4 button-primary"
+              type="submit"
+              label="Iniciar Sesión"
+              onClick={() => console.log("ejemplo")}
+            />
+          </div>
         </div>
-      </div>
-      {error && <Popup message={error} onClose={() => setError("")} />}
+      </Form>
 
-      {satisfactorio && (
-        <Popup message={"Bienvenid@"} onClose={() => setSatisfactorio("")} />
-      )}
+      <div>
+        {error && <Popup message={error} onClose={() => setError("")} />}
+
+        {satisfactorio && (
+          <Popup message={"Bienvenid@"} onClose={() => setSatisfactorio("")} />
+        )}
+      </div>
     </div>
   );
 }

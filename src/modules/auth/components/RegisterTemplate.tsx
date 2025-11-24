@@ -15,6 +15,7 @@ function RegisterTemplate() {
     Nombre: "",
     Username: "",
     Password: "",
+    PasswordClone: "",
     Email: "",
     FechaNacimiento: "",
   });
@@ -84,9 +85,41 @@ function RegisterTemplate() {
               isRequired
             />
           </div>
+          <div className="grid grid-row-2 p-3">
+            <label className="justify-self-start" htmlFor="fechaNacimiento">
+              Fecha de Nacimiento
+            </label>
+            <TextFieldAuth
+              className="grid-span-2"
+              type="date"
+              id="fechaNacimiento"
+              name="FechaNacimiento"
+              value={user.FechaNacimiento}
+              onChange={(e) => {
+                e.preventDefault();
+                const newFechaNacimiento = e.target.value;
+                setUser({ ...user, FechaNacimiento: newFechaNacimiento });
+              }}
+              label="Fecha de Nacimiento"
+              isRequired
+            />
+          </div>
         </div>
-        <div className="bg-green-500 grid grid-row-2">
-          <div className="grid grid-cols-2">
+        <div>
+          <div className="grid grid-row-2 m-3">
+            <label htmlFor="email">Email</label>
+            <TextFieldAuth
+              id="email"
+              name="Email"
+              value={user.Email}
+              onChange={handleChange}
+              label="Email"
+              isRequired
+            />
+          </div>
+        </div>
+        <div className="grid grid-row-2 ">
+          <div className="grid grid-cols-2 m-3">
             <div className="grid grid-row-2">
               <label htmlFor="password">Contraseña</label>
               <TextFieldAuth
@@ -105,13 +138,18 @@ function RegisterTemplate() {
                 type="password"
                 id="confirmPassword"
                 name="ConfirmPassword"
-                value={user.Password}
+                value={user.PasswordClone}
+                onChange={(e) => {
+                  e.preventDefault();
+                  const newPasswordClone = e.target.value;
+                  setUser({ ...user, PasswordClone: newPasswordClone });
+                }}
                 label="Confirmar Contraseña"
                 isRequired
               />
             </div>
           </div>
-          <div>
+          <div className="flex flex-col m-2">
             <ListAuth
               items={passwordErrors}
               msg={(error) => error.message}
@@ -119,29 +157,26 @@ function RegisterTemplate() {
             />
           </div>
         </div>
-        <div>
-          <label htmlFor="fechaNacimiento">Fecha de Nacimiento</label>
-          <TextFieldAuth
-            type="date"
-            id="fechaNacimiento"
-            name="FechaNacimiento"
-            value={user.Password}
-            onChange={handleChange}
-            label="Fecha de Nacimiento"
-            isRequired
+        <div className="flex p-2 justify-center">
+          <Button
+            className="py-2 px-4 button-primary"
+            type="submit"
+            label="Registrarse"
           />
         </div>
-        <Button
-          className="py-2 px-4 button-primary"
-          type="submit"
-          label="Registrarse"
-        />
-        <p>
-          ¿Ya tienes una cuenta? <Link to="/login">Inicia sesión</Link>
-        </p>
       </form>
-      error && (
-      <ErrorPopup message={error} onClose={() => setError("")} />)
+      <div className="flex justify-center">
+        <p>
+          ¿Ya tienes una cuenta?{" "}
+          <Link
+            className="text-blue-500 hover:underline active:text-violet-700 focus:text-violet-700"
+            to="/login"
+          >
+            Inicia sesión
+          </Link>
+        </p>
+      </div>
+      {error && <ErrorPopup message={error} onClose={() => setError("")} />}
     </div>
   );
 }

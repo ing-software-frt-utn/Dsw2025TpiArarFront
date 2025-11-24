@@ -13,17 +13,22 @@
     @apply shadow-md shadow-gray-500/50;
     @apply transition-colors duration-400 ease-in;
     @apply hover:bg-gray-200 hover:text-black;
-    @apply focus:bg-gray-100 focus:text-black outline-none focus:ring-2 focus:ring-violet-700 focus:border-transparent;
+    @apply focus:bg-gray-100 focus:text-black outline-none;
   }
 }
 @layer auth {
   .text-field-auth {
+    @apply border border-black;
     @apply p-4 m-2;
+    @apply hover:ring-violet-400 hover:bg-violet-100 hover:border-violet-400 hover:ring-2;
+    @apply hover:transition-all duration-200 ease-in-out;
+    @apply focus:ring-2;
+    @apply focus:ring-violet-700 focus:border-violet-700 focus:shadow-xl focus:shadow-violet-400/50;
   }
   .button-primary {
     @apply bg-violet-400 text-black;
-    @apply hover:bg-violet-700 text-gray-300;
-    @apply focus:outline-none focus:ring-2 focus:ring-violet-700 focus:ring-offset-2 focus:border-transparent;
+    @apply hover:bg-indigo-700 text-gray-300;
+    @apply focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-offset-2 focus:border-transparent;
     @apply transition-colors duration-300 ease-in-out;
   }
 
