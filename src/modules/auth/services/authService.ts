@@ -1,18 +1,43 @@
-export interface RegisterCretendial {
-  Username: string;
-  Password: string;
-  Email: string;
-  Nombre: string;
-  Apellido: string;
-  FechaNacimiento: string;
-}
-export const register = async (credentials: RegisterCretendial) => {
+import { instance } from "../../shared/api/axiosInstance";
+import { User, UserRegister, Data, Error } from "../types/auth";
+export const logIn = async (user: User) => {
+  console.log(user);
+  return instance
+    .post(`api/auth/login`, user)
+    .then((res) => {
+      return Promise.resolve(res.data);
+    })
+    .catch((error) => {
+      console.error("Error en inicio de sesión:", error);
+      return Promise.reject({
+        status: 500,
+        error: {
+          message: "No se pudo conectar con el servidor",
+          code: "S-500",
+        },
+      });
+    });
+};
+export const signUp = async (
+  user: UserRegister,
+): Promise<Data<string, Error>> => {
+  const response = await instance.post(`api/auth/register`, user);
+  return { data: response.data.token };
+};
+export const _register = async (credentials: {
+  readonly username: string;
+  readonly password: string;
+  readonly mail: string;
+  readonly nombre: string;
+  readonly apellido: string;
+  readonly fechaNacimiento: string;
+}): Promise<any> => {
   try {
     console.log(credentials);
     const credentialsToSend = {
       ...credentials,
-      FechaNacimiento: credentials.FechaNacimiento
-        ? new Date(credentials.FechaNacimiento).toISOString().split("T")[0]
+      FechaNacimiento: credentials.fechaNacimiento
+        ? new Date(credentials.fechaNacimiento).toISOString().split("T")[0]
         : "",
     };
     const response = await fetch(`api/auth/register`, {
@@ -38,7 +63,7 @@ export const register = async (credentials: RegisterCretendial) => {
   }
 };
 
-export const login = async (credentials: {
+export const _login = async (credentials: {
   Email: string;
   Password: string;
 }) => {

@@ -1,27 +1,27 @@
 export interface FieldProps {
-  type?: string;
-  name: string;
-  value: string;
+  type?: React.HTMLInputTypeAttribute;
+  name?: string;
+  value?: string;
   id?: string;
   isRequired?: boolean;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   label?: string;
   className?: string;
 }
 import React from "react";
-function TextField(props: FieldProps) {
+function TextField(props: FieldProps, ...restProps) {
   return (
-    <input
-      className={props.className?.toString() + " text-field-base"}
-      type={props.type || "text"}
-      id={props.id}
-      name={props.name}
-      value={props.value}
-      onChange={props.onChange}
-      required={props.isRequired}
-      placeholder={props.placeholder}
-    />
+    <>
+      <input
+        className={`${props.className} text-field-base`}
+        type={props.type || "text"}
+        id={props.id}
+        name={props.name}
+        value={props.value}
+        placeholder={props.placeholder}
+        {...restProps}
+      />
+    </>
   );
 }
 
