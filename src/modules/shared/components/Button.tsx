@@ -16,7 +16,7 @@ function Button(props: Props) {
         </button>
       ) : (
         <button
-          className={props.className?.toString() + " button-base"}
+          className={`${props.className?.toString()} button-base`}
           type={props.type}
           onClick={props.onClick}
         >

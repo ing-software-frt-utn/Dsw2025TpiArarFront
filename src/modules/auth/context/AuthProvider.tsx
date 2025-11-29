@@ -6,7 +6,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  signin: (user: User) => Promise<any>;
+  signin: (user: User) => Promise<{ token: string | null; error: any | null }>;
   signup: (user: UserRegister) => Promise<any>;
   signout: () => void;
   health: () => Promise<bool>;
@@ -26,8 +26,10 @@ function AuthProvider({ children }) {
     setIsAuthenticated(false);
   };
 
-  const signin = async (user: User) => {
-    await logIn(user)
+  const signin = async (
+    user: User,
+  ): Promise<{ token: string | null; error: any }> => {
+    return await logIn(user)
       .then((data) => {
         if (data) {
           setIsAuthenticated(true);
@@ -38,7 +40,7 @@ function AuthProvider({ children }) {
         }
       })
       .catch((err) => {
-        return { error: err.message, token: null };
+        return { error: err, token: null };
       });
   };
   const signup = async (user: UserRegister) => {

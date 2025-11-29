@@ -1,28 +1,27 @@
 import { instance } from "../../shared/api/axiosInstance";
 import { User, UserRegister, Data, Error } from "../types/auth";
+const authApi = `api/auth`;
 export const logIn = async (user: User) => {
-  console.log(user);
   return instance
-    .post(`api/auth/login`, user)
+    .post(`${authApi}/login`, user)
     .then((res) => {
       return Promise.resolve(res.data);
     })
     .catch((error) => {
       console.error("Error en inicio de sesión:", error);
-      return Promise.reject({
-        status: 500,
-        error: {
-          message: "No se pudo conectar con el servidor",
-          code: "S-500",
-        },
-      });
+      return Promise.reject(error);
     });
 };
-export const signUp = async (
-  user: UserRegister,
-): Promise<Data<string, Error>> => {
-  const response = await instance.post(`api/auth/register`, user);
-  return { data: response.data.token };
+export const signUp = async (user: UserRegister) => {
+  return await instance
+    .post(`${authApi}/register`, user)
+    .then((res) => {
+      return Promise.resolve(res.data);
+    })
+    .catch((error) => {
+      console.error("Error en registro:", error);
+      return Promise.reject(error);
+    });
 };
 export const _register = async (credentials: {
   readonly username: string;

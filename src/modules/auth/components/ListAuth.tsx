@@ -1,4 +1,4 @@
-import List from "../../../shared/List";
+import List from "../../shared/components/List";
 interface ListAuthProps<T> {
   items: T[];
   valid: (err: T) => boolean;

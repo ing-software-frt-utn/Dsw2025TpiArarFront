@@ -12,12 +12,11 @@ export interface User {
   password: string;
 }
 export interface UserRegister {
-  username: string;
   password: string;
   email: string;
-  nombre: string;
-  apellido: string;
-  fechaNacimiento: string;
+  name: string;
+  lastName: string;
+  birthDate: string;
 }
 //tipos para los datos de usuarios
 export interface UserCredentials {

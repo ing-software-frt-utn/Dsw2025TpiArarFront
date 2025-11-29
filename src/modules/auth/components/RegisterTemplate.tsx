@@ -1,28 +1,34 @@
 import { useState } from "react";
-import { register } from "../services/authService";
 //import "../components/LoginTemplate.css";
 import logo from "../../../assets/images/plataformarar.png";
 import { Link } from "react-router-dom";
-import Button from "../../../shared/Button";
-import ErrorPopup from "../../../shared/Popup";
 import { validPassword } from "../helper/passwordValidation";
-import TextFieldAuth from "./TextFieldAuth";
-import ListAuth from "./ListAuth";
-function RegisterTemplate() {
-  const [error, setError] = useState<string>("");
-  const [user, setUser] = useState({
-    Apellido: "",
-    Nombre: "",
-    Username: "",
-    Password: "",
-    PasswordClone: "",
-    Email: "",
-    FechaNacimiento: "",
-  });
+import { UserRegister } from "../types/auth";
+import { useAuth } from "../hooks/useAuth";
 
+import TextField from "../../shared/components/TextField";
+import Form from "../../shared/components/Form";
+import Button from "../../shared/components/Button";
+import ErrorPopup from "../../shared/components/Popup";
+import ListAuth from "./ListAuth";
+import { useForm } from "react-hook-form";
+
+function RegisterTemplate() {
+  const { signUp } = useAuth();
+  const [error, setError] = useState<string>("");
+  const [user, setUser] = useState<UserRegister>();
+  const { register, handleSubmit } = useForm<UserRegister>({
+    defaultValues: {
+      email: "",
+      password: "",
+      lastName: "",
+      birthDate: "",
+      name: "",
+    },
+  });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUser({ ...user, [name.charAt(0).toUpperCase() + name.slice(1)]: value });
+    setUser({ ...user, email: value });
   };
 
   const [passwordErrors, setPasswordError] = useState<
@@ -32,7 +38,7 @@ function RegisterTemplate() {
     e.preventDefault();
 
     const newPassword = e.target.value;
-    setUser({ ...user, Password: newPassword });
+    setUser({ ...user, password: newPassword });
     const message = validPassword(newPassword);
     const mappedMessages = message.map(([msg, isValid]) => ({
       message: msg,
@@ -40,114 +46,75 @@ function RegisterTemplate() {
     }));
     setPasswordError(mappedMessages);
   };
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const data = await register(user);
-
-    if (data.ok && data.id) {
+  const onSubmit = async (data: UserRegister) => {
+    console.log(data);
+    const response = await signUp(data);
+    if (response.ok && response.id) {
       alert("Usuario registrado con éxito");
     } else {
-      setError(data.message || "Error en el registro");
+      setError(response.message || "Error en el registro");
     }
   };
-
   return (
     <div className=" bg-gray-100 rounded-[2vw] p-3 md:p-3 ">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-row justify-between items-center">
         <img src={logo} alt="Logo" className="logo" />
-        <h1>PLATAFORMA ARAR</h1>
-        <h2>REGISTRARSE</h2>
+        <div className="flex-initial justify-center">
+          <h1 className="text-blue-500 text-left m-1 text-2xl font-bold underline">
+            Registro
+          </h1>
+        </div>
       </div>
-      <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-2 gap-1 p-3">
-          <div className="grid grid-row-2 p-3">
-            <label htmlFor="apellido">Apellido</label>
-            <TextFieldAuth
-              id="apellido"
-              name="Apellido"
-              value={user.Apellido}
-              onChange={handleChange}
-              label="Apellido"
-              isRequired
-            />
-          </div>
-          <div className="grid grid-row-2 p-3">
-            <label className="" htmlFor="nombre">
-              Nombre
-            </label>
-            <TextFieldAuth
-              id="nombre"
-              name="Nombre"
-              value={user.Nombre}
-              onChange={handleChange}
-              label="Nombre"
-              isRequired
-            />
-          </div>
-          <div className="grid grid-row-2 p-3">
-            <label className="justify-self-start" htmlFor="fechaNacimiento">
-              Fecha de Nacimiento
-            </label>
-            <TextFieldAuth
-              className="grid-span-2"
-              type="date"
-              id="fechaNacimiento"
-              name="FechaNacimiento"
-              value={user.FechaNacimiento}
-              onChange={(e) => {
-                e.preventDefault();
-                const newFechaNacimiento = e.target.value;
-                setUser({ ...user, FechaNacimiento: newFechaNacimiento });
-              }}
-              label="Fecha de Nacimiento"
-              isRequired
-            />
-          </div>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-row gap-1 p-3">
+          <TextField
+            className="text-field-auth"
+            id="name"
+            label="Nombre"
+            placeholder="Nombre"
+            {...register("name", { required: true })}
+          />
+          <TextField
+            className="text-field-auth"
+            id="lastName"
+            label="Apellido"
+            placeholder="Apellido"
+            {...register("lastName", { required: true })}
+          />
         </div>
-        <div>
-          <div className="grid grid-row-2 m-3">
-            <label htmlFor="email">Email</label>
-            <TextFieldAuth
-              id="email"
-              name="Email"
-              value={user.Email}
-              onChange={handleChange}
-              label="Email"
-              isRequired
-            />
-          </div>
-        </div>
+        <TextField
+          className="text-field-auth grid-span-2"
+          type="date"
+          id="birthDate"
+          label="Fecha de nacimiento"
+          {...register("birthDate", {
+            required: "La fecha de nacimiento es requerida",
+          })}
+        />
+        <TextField
+          className="text-field-auth"
+          id="email"
+          label="Email"
+          {...register("email", { required: true })}
+        />
         <div className="grid grid-row-2 ">
           <div className="grid grid-cols-2 m-3">
-            <div className="grid grid-row-2">
-              <label htmlFor="password">Contraseña</label>
-              <TextFieldAuth
-                type="password"
-                id="password"
-                name="Password"
-                value={user.Password}
-                onChange={handlePasswordInput}
-                label="Contraseña"
-                isRequired
-              />
-            </div>
-            <div className="grid grid-row-2">
-              <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-              <TextFieldAuth
-                type="password"
-                id="confirmPassword"
-                name="ConfirmPassword"
-                value={user.PasswordClone}
-                onChange={(e) => {
-                  e.preventDefault();
-                  const newPasswordClone = e.target.value;
-                  setUser({ ...user, PasswordClone: newPasswordClone });
-                }}
-                label="Confirmar Contraseña"
-                isRequired
-              />
-            </div>
+            <TextField
+              className="text-field-auth"
+              type="password"
+              id="password"
+              label="Contraseña"
+              {...register("password", {
+                required: "La Contraseña es requerida",
+              })}
+            />
+            <TextField
+              className="text-field-auth"
+              type="password"
+              id="confirmPassword"
+              label="Confirmar Contraseña"
+              {...register("password", { required: false })}
+            />
           </div>
           <div className="flex flex-col m-2">
             <ListAuth
@@ -164,7 +131,7 @@ function RegisterTemplate() {
             label="Registrarse"
           />
         </div>
-      </form>
+      </Form>
       <div className="flex justify-center">
         <p>
           ¿Ya tienes una cuenta?{" "}

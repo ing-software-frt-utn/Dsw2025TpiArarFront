@@ -1,109 +1,85 @@
 import { useState } from "react";
-import { login } from "../services/authService";
+import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import logo from "../../../assets/images/plataformarar.png";
 import { Link } from "react-router-dom";
-import Popup from "../../../shared/Popup";
+import Popup from "../../shared/components/Popup";
 import { validPassword } from "../helper/passwordValidation";
-import Form from "../../../shared/Form";
-import TextFieldAuth from "./TextFieldAuth";
+import Form from "../../shared/components/Form";
 import ListAuth from "./ListAuth";
-//import List from "../../../shared/List";
-import Button from "../../../shared/Button";
+import Button from "../../shared/components/Button";
 import "./LoginTemplate.css";
+import { useForm } from "react-hook-form";
+import { User } from "../types/auth";
+import TextField from "../../shared/components/TextField";
+
 function LoginTemplate() {
+  const { logIn } = useAuth();
   const [error, setError] = useState<string>("");
   const [satisfactorio, setSatisfactorio] = useState<string>("");
-  const [user, setUser] = useState({
-    Email: "",
-    Password: "",
+  const { register, handleSubmit } = useForm<User>({
+    defaultValues: { email: "", password: "" },
   });
-
+  const onSubmit = async (user: User) => {
+    const { token, error } = await logIn(user);
+    console.log(token, error);
+    if (token) {
+      setSatisfactorio("Inicio de sesión exitoso");
+    } else {
+      setError("Credenciales inválidas");
+    }
+  };
   const [passwordErrors, setPasswordError] = useState<
     { message: string; isValid: boolean }[]
   >([]);
 
-  const handleUsernameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUser({ ...user, Email: e.target.value });
-  };
-
-  const handlePasswordInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newPassword = e.target.value;
-    setUser({ ...user, Password: newPassword });
-    const message = validPassword(newPassword);
-    const mappedMessages = message.map(([msg, isValid]) => ({
-      message: msg,
-      isValid: isValid,
-    }));
-    setPasswordError(mappedMessages);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validPassword(user.Password)) {
-      setError("Por favor, corrige el formato de la contraseña.");
-      return;
-    }
-    const data = await login(user);
-
-    if (data?.token) {
-      localStorage.setItem("token", data.token);
-      setSatisfactorio("Bienvenido");
-    } else {
-      setError(data?.message || "Credenciales inválidas");
-    }
-  };
-
   return (
     <div className="bg-gray-100 rounded-[2vw] p-4 md:p-3 ">
-      <div className="flex justify-between items-center">
-        <h1 className="text-center text-2xl font-bold underline flex-1 ">
-          Bienvenido a
+      <div className="flex flex-col items-center">
+        <img className="logo" src={logo} alt="Logo" />
+        <h1 className="m-1 text-center text-2xl font-bold underline ">
+          Bienvenido
         </h1>
-        <img className="scale-[50%] bg-gray-100" src={logo} alt="Logo" />
       </div>
       <Form
         className="px-4 py-3 rounded-full bg-white-500 grid row-span-2 gap-4"
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="grid grid-row-2 row-span-2 grid-cols-1 p-3">
-          <div className="flex flex-col gap-4">
-            <label htmlFor="email" className="text-black font-sans m-2 w-96">
-              Email
-            </label>
-
-            <TextFieldAuth
-              type="email"
-              id="email"
-              name="Email"
-              value={user.Email}
-              onChange={handleUsernameInput}
-              label="Correo Electrónico"
-              isRequired
-              className="lowercase"
-            />
-          </div>
-          <div className="flex flex-col gap-4">
-            <label htmlFor="password" className="flex-none font-sans m-2 w-96">
-              Contraseña
-            </label>
-            <TextFieldAuth
-              type="password"
-              id="password"
-              name="Password"
-              value={user.Password}
-              onChange={handlePasswordInput}
-              label="Contraseña"
-              isRequired
-            />
-
-            <ListAuth
-              items={passwordErrors}
-              msg={(passwordErrors) => passwordErrors.message}
-              valid={(passwordErrors) => passwordErrors.isValid}
-            />
-          </div>
+        <div className="flex flex-col row-span-3 grid-cols-1 p-3 m-2">
+          <TextField
+            className="text-field-auth"
+            type="email"
+            id="email"
+            label="email"
+            placeholder="username@email.com"
+            {...register("email", { required: true })}
+          />
+          <TextField
+            className="text-field-auth"
+            type="password"
+            id="password"
+            label="Contraseña"
+            placeholder="********"
+            {...register("password", {
+              onChange(e: React.ChangeEvent<HTMLInputElement>) {
+                const newPassword = e.target.value;
+                const message = validPassword(newPassword);
+                const mappedMessages = message.map(([msg, isValid]) => ({
+                  message: msg,
+                  isValid: isValid,
+                }));
+                setPasswordError(mappedMessages);
+              },
+              required: true,
+            })}
+          />
         </div>
         <div className="flex justify-center space-x-4 space-y-4 sm:text-left">
+          <Button
+            className="py-2 px-4 button-primary"
+            type="submit"
+            label="Iniciar Sesión"
+          />
           <Link to="/register">
             <Button
               className="py-2 px-4 button-secundary"
@@ -111,14 +87,6 @@ function LoginTemplate() {
               label="Registrarse"
             />
           </Link>
-          <div>
-            <Button
-              className="py-2 px-4 button-primary"
-              type="submit"
-              label="Iniciar Sesión"
-              onClick={() => console.log("ejemplo")}
-            />
-          </div>
         </div>
       </Form>
 

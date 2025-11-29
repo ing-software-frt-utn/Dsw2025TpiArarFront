@@ -1,5 +1,4 @@
 import { ReactElement, isValidElement } from "react";
-import "./List.css";
 
 interface ListProps {
   order: "Ordered" | "Unordered";

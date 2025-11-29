@@ -1,0 +1,23 @@
+Button {
+  width: 100%;
+  padding: 1em 1em;
+  box-sizing: border-box;
+  text-align: left;
+  font-size: 1.2rem;
+  color: white;
+  background-color: #404040;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+Button:hover {
+  background-color: #606060;
+  cursor: pointer;
+}
+
+.icon {
+  width: 2.5rem;
+  height: auto;
+}
