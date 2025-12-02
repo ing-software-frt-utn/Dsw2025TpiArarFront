@@ -1,5 +1,5 @@
 import styles from "./Sidebar.module.css";
-import Button from "../../shared/Button";
+import Button from "../../modules/shared/components/Button";
 interface Props {}
 function Sidebar(props: Props) {
   return (

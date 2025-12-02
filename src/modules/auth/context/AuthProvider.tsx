@@ -1,6 +1,5 @@
 import { createContext, useState } from "react";
 import { logIn, signUp } from "../services/authService";
-import { healthCheck } from "../services/healthService";
 import { User, UserRegister } from "../types/auth";
 interface AuthContextType {
   user: User | null;
@@ -9,12 +8,12 @@ interface AuthContextType {
   signin: (user: User) => Promise<{ token: string | null; error: any | null }>;
   signup: (user: UserRegister) => Promise<any>;
   signout: () => void;
-  health: () => Promise<bool>;
+  //health: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-function AuthProvider({ children }) {
+function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     const token = localStorage.getItem("token");
 
@@ -27,7 +26,7 @@ function AuthProvider({ children }) {
   };
 
   const signin = async (
-    user: User,
+    user: User
   ): Promise<{ token: string | null; error: any }> => {
     return await logIn(user)
       .then((data) => {
@@ -49,10 +48,10 @@ function AuthProvider({ children }) {
       return { error: error };
     } else return { data: data };
   };
-  const health = async () => {
-    const { data } = await healthCheck();
-    return data ? true : false;
-  };
+  //const health = async () => {
+  //const { data } = await healthCheck();
+  //return data ? true : false;
+  //};
   return (
     <AuthContext.Provider
       value={{
@@ -62,7 +61,7 @@ function AuthProvider({ children }) {
         signin,
         signout,
         signup,
-        health,
+        //health,
       }}
     >
       {children}

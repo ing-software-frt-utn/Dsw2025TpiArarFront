@@ -8,7 +8,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return (
       <>
         <Navigate to="/login" replace />
-        <Navigate to="/register" replace />
       </>
     );
   }
