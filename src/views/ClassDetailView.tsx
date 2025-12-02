@@ -47,7 +47,7 @@ const ClassDetailView = () => {
           <div
             key={juego.id}
             className="border-2 border-blue-100 rounded-xl p-4 hover:shadow-lg hover:border-blue-300 transition-all cursor-pointer bg-blue-50"
-            onClick={() => alert(`¡Vamos a jugar a: ${juego.title}!`)} // Acción temporal
+            onClick={() => navigate(`/jugar/${juego.id}`)}
           >
             <img
               src={juego.imageUrl}

@@ -5,6 +5,7 @@ import { AuthProvider } from "./modules/auth/context/AuthProvider";
 import Base from "./layout/BaseLayout/Base";
 import ClassDetailView from "./views/ClassDetailView";
 import DashboardStudentView from "./views/DashboardStudentView";
+import GameView from "./views/GameView";
 
 function App() {
   return (
@@ -14,13 +15,13 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="*" element={<LoginPage />} />
-
           {/* Rutas protegidas */}
           <Route element={<Base />}>
             <Route path="/" element={<DashboardStudentView />} />
             <Route path="/clases/:id" element={<ClassDetailView />} />
           </Route>
-
+          <Route path="/jugar/:gameId" element={<GameView />} /> //está
+          apropósito así para que no tenga sidebar ni header
           <Route path="*" element={<LoginPage />} />
         </Routes>
       </Router>
