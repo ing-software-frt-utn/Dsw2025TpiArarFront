@@ -1,16 +1,17 @@
 import { Outlet } from "react-router-dom";
-import styles from "./Base.module.css";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Header from "../components/Header/Header";
 
 function Base() {
   return (
     <>
-      <div className={styles.layoutWrapper}>
-        <Sidebar />
-        <div className={styles.mainSection}>
-          <Header />
-          <div className={styles.pageContent}>{<Outlet />}</div>
+      <div className="flex flex-col h-screen w-screen overflow-hidden bg-white">
+        <Header />
+        <div className="flex flex-1 overflow-hidden">
+          <Sidebar />
+          <main className="flex-1 overflow-auto p-1.5">
+            <Outlet />
+          </main>
         </div>
       </div>
     </>

@@ -1,18 +1,20 @@
-import styles from "./Sidebar.module.css";
+import { useNavigate } from "react-router";
 import Button from "../../../shared/components/Button";
 interface Props {}
 function Sidebar(props: Props) {
+  const navigate = useNavigate();
+
   return (
-    <>
-      <div className={styles.sideBar}>
-        <img className={styles.logo} src="/plataformarar.png" alt="Logo ARAR" />
-        <div className={styles.menu}>
-          <span className={styles.subline}>Bienvenido</span>
-          <Button label="Home" imgSrc={"dashboard-svgrepo-com.svg"} />
-          <Button label="Juegos" imgSrc={"game-controller-svgrepo-com.svg"} />
-        </div>
+    <div className="md:flex flex-col w-2/15 h-full bg-white border-r border-gray-200 shadow-sm">
+      <div className="flex flex-col gap-2 p-4 mt-2">
+        <Button
+          label="Home"
+          imgSrc=""
+          onClick={() => navigate("/")}
+          className="w-full justify-start hover:bg-gray-50 text-gray-700"
+        />
       </div>
-    </>
+    </div>
   );
 }
 export default Sidebar;

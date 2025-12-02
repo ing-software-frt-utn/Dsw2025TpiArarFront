@@ -6,24 +6,28 @@ type Props = {
   className?: string;
 };
 
-function Button(props: Props) {
+function Button({
+  label,
+  imgSrc,
+  onClick,
+  type = "button",
+  className = "",
+}: Props) {
   return (
-    <>
-      {props.imgSrc ? (
-        <button className="" onClick={props.onClick}>
-          <img src={props.imgSrc} alt="Icono del botón" />
-          {props.label}
-        </button>
-      ) : (
-        <button
-          className={`${props.className?.toString()} button-base`}
-          type={props.type}
-          onClick={props.onClick}
-        >
-          {props.label}
-        </button>
+    <button
+      type={type}
+      onClick={onClick}
+      className={`${className} button-base flex items-centergap-3`}
+    >
+      {imgSrc && (
+        <img
+          src={imgSrc}
+          alt=""
+          className="w-5 h-5 object-contain" // tamaño(w-5 = 20px)
+        />
       )}
-    </>
+      <span>{label}</span>
+    </button>
   );
 }
 export default Button;
