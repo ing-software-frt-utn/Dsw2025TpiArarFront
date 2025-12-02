@@ -1,7 +1,7 @@
 //lee el id de la URL usando useParams para saber que clase mostrar
 
 import { useParams, useNavigate } from "react-router-dom";
-import { mockClasses } from "../mockData";
+import { mockClasses } from "../../../mockData";
 
 const ClassDetailView = () => {
   const { id } = useParams();

@@ -1,7 +1,7 @@
 //oculto el sidebar en la vista del juego, para que si es un nene con tdah o autista no se distraiga
 
 import { useParams, useNavigate } from "react-router-dom";
-import { mockClasses } from "../mockData";
+import { mockClasses } from "../../../mockData";
 
 const GameView = () => {
   const { gameId } = useParams();

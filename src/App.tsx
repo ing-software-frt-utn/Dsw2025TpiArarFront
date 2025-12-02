@@ -3,9 +3,9 @@ import LoginPage from "./modules/auth/pages/LoginPage";
 import RegisterPage from "./modules/auth/pages/RegisterPage";
 import { AuthProvider } from "./modules/auth/context/AuthProvider";
 import Base from "./layout/BaseLayout/Base";
-import ClassDetailView from "./views/ClassDetailView";
-import DashboardStudentView from "./views/DashboardStudentView";
-import GameView from "./views/GameView";
+import ClassDetailView from "./modules/classes/pages/ClassDetail";
+import DashboardStudentView from "./modules/dashboard/pages/StudentDashboard";
+import GameView from "./modules/games/pages/GamePlayer";
 
 function App() {
   return (

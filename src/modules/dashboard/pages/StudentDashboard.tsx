@@ -1,4 +1,4 @@
-import { mockClasses } from "../mockData";
+import { mockClasses } from "../../../mockData";
 import { useNavigate } from "react-router-dom";
 
 const DashboardStudentView = () => {

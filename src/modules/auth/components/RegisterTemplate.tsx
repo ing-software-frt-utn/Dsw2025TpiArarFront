@@ -2,14 +2,14 @@ import { useState } from "react";
 //import "../components/LoginTemplate.css";
 import logo from "../../../assets/images/plataformarar.png";
 import { Link } from "react-router-dom";
-import { validPassword } from "../helper/passwordValidation";
+import { validPassword } from "../helpers/passwordValidation";
 import { UserRegister } from "../types/auth";
 import { useAuth } from "../hooks/useAuth";
 
-import TextField from "../../shared/components/TextField";
-import Form from "../../shared/components/Form";
-import Button from "../../shared/components/Button";
-import ErrorPopup from "../../shared/components/Popup";
+import TextField from "../../../shared/components/TextField";
+import Form from "../../../shared/components/Form";
+import Button from "../../../shared/components/Button";
+import ErrorPopup from "../../../shared/components/Popup";
 import ListAuth from "./ListAuth";
 import { useForm } from "react-hook-form";
 

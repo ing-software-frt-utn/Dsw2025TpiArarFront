@@ -1,4 +1,4 @@
-import { ClassRoom } from "./types/dashboard";
+import { ClassRoom } from "./types/domain";
 
 export const mockClasses: ClassRoom[] = [
   {

@@ -3,15 +3,15 @@ import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import logo from "../../../assets/images/plataformarar.png";
 import { Link } from "react-router-dom";
-import Popup from "../../shared/components/Popup";
-import { validPassword } from "../helper/passwordValidation";
-import Form from "../../shared/components/Form";
+import Popup from "../../../shared/components/Popup";
+import { validPassword } from "../helpers/passwordValidation";
+import Form from "../../../shared/components/Form";
 import ListAuth from "./ListAuth";
-import Button from "../../shared/components/Button";
+import Button from "../../../shared/components/Button";
 import "./LoginTemplate.css";
 import { useForm } from "react-hook-form";
 import { User } from "../types/auth";
-import TextField from "../../shared/components/TextField";
+import TextField from "../../../shared/components/TextField";
 
 function LoginTemplate() {
   const { logIn } = useAuth();
