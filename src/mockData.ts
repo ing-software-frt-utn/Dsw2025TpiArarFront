@@ -3,7 +3,7 @@ import { ClassRoom } from "./types/dashboard";
 export const mockClasses: ClassRoom[] = [
   {
     id: 1,
-    name: "Aula 101",
+    name: "Matematicas",
     professorName: "Cesar Delgado",
     imageUrl: "https://cdn-icons-png.flaticon.com/512/2232/2232688.png",
     games: [
@@ -25,7 +25,7 @@ export const mockClasses: ClassRoom[] = [
   },
   {
     id: 2,
-    name: "Aula 102",
+    name: "Lengua",
     professorName: "Luciano dotnet",
     imageUrl: "https://cdn-icons-png.flaticon.com/512/2232/2232688.png",
     games: [
