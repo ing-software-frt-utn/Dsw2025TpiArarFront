@@ -1,8 +1,10 @@
+import React from "react";
+
 type Props = {
   label: string;
-  imgSrc?: string;
+  imgSrc?: string | React.ReactNode;
   onClick?: () => void;
-  type?: "button" | "submit" | "reset";
+  type?: React.ButtonHTMLAttributes<HTMLButtonElement>["type"];
   className?: string;
 };
 
@@ -17,17 +19,20 @@ function Button({
     <button
       type={type}
       onClick={onClick}
-      className={`${className} button-base flex items-centergap-3`}
+      className={`${className} button-base flex items-center gap-3 text-2xl`}
     >
-      {imgSrc && (
+      {imgSrc && typeof imgSrc === "string" ? (
         <img
           src={imgSrc}
           alt=""
-          className="w-5 h-5 object-contain" // tamaño(w-5 = 20px)
+          className="w-5 h-5 object-contain"
         />
+      ) : (
+        imgSrc
       )}
       <span>{label}</span>
     </button>
   );
 }
+
 export default Button;
