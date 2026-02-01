@@ -6,7 +6,8 @@ import Base from "./layout/BaseLayout/Base";
 import ClassDetailView from "./modules/classes/pages/ClassDetail";
 import DashboardStudentView from "./modules/dashboard/pages/StudentDashboard";
 import GameView from "./modules/games/pages/GamePlayer";
-
+import AhorcaditoFactory from "./modules/games/pages/AhorcaditoFactory";
+import AhorcaditoFactoryCreate from "./modules/games/pages/AhorcaditoFactoryCreate";
 function App() {
   return (
     <AuthProvider>
@@ -15,10 +16,13 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="*" element={<LoginPage />} />
+
           {/* Rutas protegidas */}
           <Route element={<Base />}>
             <Route path="/" element={<DashboardStudentView />} />
             <Route path="/clases/:id" element={<ClassDetailView />} />
+            <Route path="/Ahorcadito" element={<AhorcaditoFactory />} />
+            <Route path="/AhorcaditoC" element={<AhorcaditoFactoryCreate />} />
           </Route>
           <Route path="/jugar/:gameId" element={<GameView />} /> //está
           apropósito así para que no tenga sidebar ni header

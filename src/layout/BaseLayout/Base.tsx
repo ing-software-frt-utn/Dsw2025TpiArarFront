@@ -9,7 +9,7 @@ function Base() {
         <Header />
         <div className="flex flex-1 overflow-hidden">
           <Sidebar />
-          <main className="flex-1 overflow-auto p-1.5">
+          <main className="flex-1 h-full overflow-auto p-1.5">
             <Outlet />
           </main>
         </div>
