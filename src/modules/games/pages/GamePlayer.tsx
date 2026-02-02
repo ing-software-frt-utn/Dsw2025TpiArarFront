@@ -2,6 +2,7 @@
 
 import { useParams, useNavigate } from "react-router-dom";
 import { mockClasses } from "../../../mockData";
+import Ahorcadito from "../ahorcadito/pages/Ahorcadito";
 
 const GameView = () => {
   const { gameId } = useParams();
@@ -13,10 +14,28 @@ const GameView = () => {
 
   if (!gameFinded) return <div>Juego no encontrado</div>;
 
+  {
+    /* elegir juego segun id */
+  }
+  const renderGameContent = () => {
+    switch (gameFinded.id) {
+      case 2:
+        return <Ahorcadito level="MEDIUM" />;
+        {
+          /*simulo asignacion de nivel del profesor*/
+        }
+        {
+          /*poner los otros juegos, en mockData estan los id */
+        }
+      default:
+        return <div>Juego no implementado</div>;
+    }
+  };
+
   return (
-    <div className="flex flex-col h-screen bg-gray-900 text-white">
+    <div className="fixed inset-0 w-screen h-screen z-50 flex flex-col bg-gray-900 text-white overflow-hidden">
       {/* Barra superior simple para no distraer */}
-      <div className="flex justify-between items-center p-4 bg-gray-800">
+      <div className="flex-none flex justify-between items-center p-4 bg-gray-800 shadow-md z-10">
         <h1 className="text-2xl font-bold text-yellow-400">
           {gameFinded.title}
         </h1>
@@ -31,17 +50,8 @@ const GameView = () => {
       </div>
 
       {/* Área del Juego */}
-      <div className="flex-1 flex items-center justify-center bg-gray-700 m-4 rounded-3xl border-4 border-gray-500 relative overflow-hidden">
-        {/* AQUÍ IRÍA LA LÓGICA DEL JUEGO */}
-        <div className="text-center">
-          <img
-            src={gameFinded.imageUrl}
-            alt="Logo del juego"
-            className="w-32 h-32 mx-auto mb-4 animate-bounce"
-          />
-          <h2 className="text-3xl">Aquí va el juego: {gameFinded.title}</h2>
-          <p className="mt-4 text-gray-400">Presiona 'Salir' para volver.</p>
-        </div>
+      <div className="flex-1 w-full bg-white relative overflow-y-auto overscroll-y-contain">
+        {renderGameContent()}
       </div>
     </div>
   );
