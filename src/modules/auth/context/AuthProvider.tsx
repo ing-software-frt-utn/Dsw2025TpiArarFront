@@ -1,6 +1,7 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useContext } from "react";
 import { logIn, signUp } from "../services/authService";
 import { User, UserRegister } from "../types/auth";
+
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
@@ -8,15 +9,20 @@ interface AuthContextType {
   signin: (user: User) => Promise<{ token: string | null; error: any | null }>;
   signup: (user: UserRegister) => Promise<any>;
   signout: () => void;
-  //health: () => Promise<boolean>;
+  setAuthSuccess: (token: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+export const useAuthContext = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuthContext must be used within AuthProvider");
+  return context;
+};
+
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     const token = localStorage.getItem("token");
-
     return Boolean(token);
   });
 
@@ -25,33 +31,35 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsAuthenticated(false);
   };
 
+  const setAuthSuccess = (token: string) => {
+    localStorage.setItem("token", token);
+    setIsAuthenticated(true);
+  };
+
   const signin = async (
     user: User
   ): Promise<{ token: string | null; error: any }> => {
     return await logIn(user)
       .then((data) => {
         if (data) {
-          setIsAuthenticated(true);
-          localStorage.setItem("token", data.token);
+          setAuthSuccess(data.token);
           return { token: data.token, error: null };
         } else {
-          return { error: "Invalid credentials", token: null };
+          return { error: "Credenciales inválidas", token: null };
         }
       })
       .catch((err) => {
         return { error: err, token: null };
       });
   };
+
   const signup = async (user: UserRegister) => {
     const { data, error } = await signUp(user);
     if (error) {
       return { error: error };
     } else return { data: data };
   };
-  //const health = async () => {
-  //const { data } = await healthCheck();
-  //return data ? true : false;
-  //};
+
   return (
     <AuthContext.Provider
       value={{
@@ -61,7 +69,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         signin,
         signout,
         signup,
-        //health,
+        setAuthSuccess,
       }}
     >
       {children}
