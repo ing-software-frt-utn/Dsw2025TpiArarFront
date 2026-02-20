@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { mockClasses } from "../../../mockData";
 import Memotest from "../../auth/components/Memotest";
+import Trivia from "../components/Trivia";
 
 const GameView = () => {
   const { gameId } = useParams();
@@ -33,7 +34,16 @@ const GameView = () => {
       {/* Área del Juego - Contenedor Gris */}
       <div className="flex-1 flex items-center justify-center bg-gray-700 m-4 rounded-3xl border-4 border-gray-500 relative overflow-y-auto">
         <div className="p-4 w-full">
-           <Memotest />
+          {gameFinded.type === "memotest" && <Memotest />}
+          {gameFinded.type === "trivia" && <Trivia />}
+
+          {gameFinded.type !== "memotest" && gameFinded.type !== "trivia" && (
+            <div className="w-full flex flex-col items-center justify-center text-center py-10">
+              <div className="text-6xl mb-4">🛠️</div>
+              <p className="text-2xl font-bold">Juego en desarrollo</p>
+              <p className="text-white/80 mt-2">Esta pantalla está como simulación por ahora.</p>
+            </div>
+          )}
         </div>
       </div>
 

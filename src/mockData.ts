@@ -15,6 +15,13 @@ export const mockClasses: ClassRoom[] = [
         type: "memotest",
       },
       {
+        id: 4,
+        title: "Trivia",
+        description: "Un juego de trivia",
+        imageUrl: "/trivia.webp",
+        type: "trivia",
+      },
+      {
         id: 2,
         title: "Ahorcadito",
         description: "Un juego de ahorcado",
