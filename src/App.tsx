@@ -8,6 +8,7 @@ import DashboardStudentView from "./modules/dashboard/pages/StudentDashboard";
 import DashboardProfessorView from "./modules/dashboard/pages/ProfessorDashboard";
 import GameView from "./modules/games/pages/GamePlayer";
 import Ahorcadito from "./modules/games/ahorcadito/pages/Ahorcadito";
+import GameHubView from "./modules/games/gameHub/pages/GameHubView";
 
 function App() {
   return (
@@ -16,16 +17,14 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="*" element={<LoginPage />} />
-          {/* Rutas protegidas */}
           <Route element={<Base />}>
             <Route path="/alumno" element={<DashboardStudentView />} />
             <Route path="/profesor" element={<DashboardProfessorView />} />
             <Route path="/clases/:id" element={<ClassDetailView />} />
+            <Route path="/profesor/gameHub" element={<GameHubView />} />
           </Route>
           <Route path="/juego/ahorcadito" element={<Ahorcadito />} />
-          <Route path="/jugar/:gameId" element={<GameView />} /> //está a
-          propósito así para que no tenga sidebar ni header
+          <Route path="/jugar/:gameId" element={<GameView />} />
           <Route path="*" element={<LoginPage />} />
         </Routes>
       </Router>

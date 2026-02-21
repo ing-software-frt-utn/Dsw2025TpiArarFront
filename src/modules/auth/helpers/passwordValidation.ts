@@ -1,4 +1,3 @@
-
 export interface RegexMap {
     [key: string]: RegExp;
 }
@@ -13,14 +12,14 @@ function validGeneric(text: string, map : [RegexMap, string][]): [string, boolea
     }
     return result;
 }
+
 function validPassword(text: string): [string,boolean][] {
     const regexMap: [RegexMap, string][] = [
         [{ '.*[a-z].*': /^(?=.*[a-z]).*$/ }, "Debe contener al menos una letra minúscula."],
         [{ '.*[A-Z].*': /^(?=.*[A-Z]).*$/ }, "Debe contener al menos una letra mayúscula."],
-        [{ '.*\d.*': /^(?=.*\d).*$/ }, "Debe contener al menos un número."],
-        [{ '.*[!@#$%^&*].*': /^(?=.*[!@#$%^&*]).*$/ }, "Debe contener al menos un símbolo (!@#$%^&*)."],
+        [{ '.*\\d.*': /^(?=.*\d).*$/ }, "Debe contener al menos un número."],
         [{ '.{8,}': /^.{8,}$/ }, "Debe tener al menos 8 caracteres de longitud."],
-        [{ '.*\s.*': /^(?!.*\s).*$/ }, "No debe contener espacios."]
+        [{ '.*\\s.*': /^(?!.*\s).*$/ }, "No debe contener espacios."]
     ];
     return validGeneric(text, regexMap);
 }

@@ -1,53 +1,59 @@
-import { useNavigate } from "react-router";
-import { useState } from "react";
-import { FaHome, FaChalkboardTeacher, FaPlusCircle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { FaHome, FaGamepad, FaChartBar, FaSignOutAlt } from "react-icons/fa";
 import Button from "../../../shared/components/Button";
-import Modal from "../../../shared/layout/Modal"; // importa tu Modal
-
-interface Props {}
 
 function Sidebar() {
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  //simulo el rol de alumno y profesor, despues cambiarlo cuando se conecte con el back
   const userRole: "professor" | "student" = "professor";
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  const handleHome = () => {
+    if (userRole === "professor") navigate("/profesor");
+    else navigate("/alumno");
+  };
+
   return (
-    <div className="md:flex flex-col w-2/15 h-full bg-white border-r border-gray-200 shadow-sm">
-      <div className="flex flex-col gap-2 p-4 mt-2">
+    <div className="hidden md:flex flex-col w-64 h-full bg-white border-r border-gray-200 shadow-sm transition-all duration-300">
+      
+      <div className="flex flex-col gap-2 p-4 mt-4">
+        
         <Button
           label="Home"
-          imgSrc={<FaHome className="mr-2" />} // ícono antes del texto
-          onClick={() => navigate("/")}
-          className="w-full flex items-center justify-start hover:bg-gray-50 text-gray-700 px-4 py-2"
+          imgSrc={<FaHome className="mr-3 text-lg" />}
+          onClick={handleHome}
+          className="w-full flex items-center justify-start hover:bg-violet-50 hover:text-violet-600 text-gray-700 font-medium px-4 py-3 rounded-lg transition-colors"
         />
-        {userRole === "student" && (
-          <Button
-            label="Join to Class"
-            imgSrc={<FaChalkboardTeacher className="mr-2" />} // ícono antes del texto
-            onClick={() => setIsModalOpen(true)}
-            className="w-full flex items-center justify-start hover:bg-gray-50 text-gray-700 px-4 py-2"
-          />
-        )}
 
-        {userRole === "professor" && (
-          <Button
-            label="Juegos"
-            imgSrc={<FaPlusCircle className="mr-2" />}
-            //aqui poner para que se abra la page de juegos
-            className="w-full flex items-center justify-start hover:bg-gray-50 text-gray-700 px-4 py-2"
-          />
-        )}
+        <Button
+          label="Juegos"
+          imgSrc={<FaGamepad className="mr-3 text-lg" />}
+          onClick={() => navigate("/profesor/gameHub")} 
+          className="w-full flex items-center justify-start hover:bg-violet-50 hover:text-violet-600 text-gray-700 font-medium px-4 py-3 rounded-lg transition-colors"
+        />
+
+        <Button
+          label="Estadísticas"
+          imgSrc={<FaChartBar className="mr-3 text-lg" />}
+          onClick={() => navigate("/estadisticas")}
+          className="w-full flex items-center justify-start hover:bg-violet-50 hover:text-violet-600 text-gray-700 font-medium px-4 py-3 rounded-lg transition-colors"
+        />
       </div>
 
-      {/* Modal renderizado dentro del Sidebar */}
-      <Modal
-        label="Unirme a una Clase"
-        content="Ingresa el Codigo de la Clase para unirte."
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+      <div className="flex-1"></div>
+
+      <div className="p-4 mb-2 border-t border-gray-100">
+        <Button
+          label="Cerrar Sesión"
+          imgSrc={<FaSignOutAlt className="mr-3 text-lg" />}
+          onClick={handleLogout}
+          className="w-full flex items-center justify-start bg-red-50 hover:bg-red-100 text-red-600 font-medium px-4 py-3 rounded-lg transition-colors"
+        />
+      </div>
     </div>
   );
 }

@@ -12,7 +12,7 @@ function Header() {
         />
 
 
-        <UserProfile name="Mariano" imgSrc="/avatar.png" />
+        <UserProfile name="Cesar Tomas" imgSrc="/avatar.png" />
 
       </div>
     </>
