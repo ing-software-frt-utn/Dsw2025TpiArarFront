@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPlus, FaGamepad, FaEdit, FaTrash } from "react-icons/fa";
-import TemplateSelectorModal from "../components/TemplateSelector";
+import TemplateSelector from "../components/TemplateSelector";
 import { mockClasses } from "../../../../mockData";
 
 export interface GameInstance {
@@ -15,7 +15,6 @@ export interface GameInstance {
 
 export default function GameHubView() {
     const navigate = useNavigate();
-    
     const [games, setGames] = useState<GameInstance[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -32,7 +31,6 @@ export default function GameHubView() {
                     difficulty: "Medio" as const, 
                     imageUrl: g.imageUrl,
                 }));
-                
                 setGames(extractedGames);
                 setIsLoading(false);
             }, 500);
@@ -40,18 +38,14 @@ export default function GameHubView() {
         fetchGames();
     }, []);
 
-    const handleSelectTemplate = (templateType: string) => {
+    const handleSelectTemplate = (id: string) => {
         setShowCreateModal(false);
-        navigate(`/profesor/juegos/nuevo?tipo=${templateType.toLowerCase()}`);
+        // Ajustamos la navegación para que coincida con la ruta definida en App.tsx
+        navigate(`/juegos/nuevo?tipo=${id}`);
     };
 
-    const handleEdit = (id: number) => {
-        console.log("Editar:", id);
-    };
-
-    const handleDelete = (id: number) => {
-        console.log("Eliminar:", id);
-    };
+    const handleEdit = (id: number) => console.log(id);
+    const handleDelete = (id: number) => console.log(id);
 
     const getDifficultyColor = (difficulty: string) => {
         switch (difficulty) {
@@ -70,19 +64,13 @@ export default function GameHubView() {
                         <FaGamepad />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold text-blue-600">
-                            Mis Juegos 🎮
-                        </h1>
-                        <p className="text-gray-500 text-xl">
-                            Panel de gestión del profesor
-                        </p>
+                        <h1 className="text-3xl font-bold text-blue-600">Mis Juegos 🎮</h1>
+                        <p className="text-gray-500 text-xl font-medium">Panel de gestión del profesor</p>
                     </div>
                 </div>
             </div>
 
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">
-                Juegos Creados
-            </h2>
+            <h2 className="text-2xl font-bold mb-6 text-gray-800 tracking-tight">Juegos Creados</h2>
 
             {isLoading ? (
                 <div className="flex justify-center p-10">
@@ -92,58 +80,55 @@ export default function GameHubView() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     <div 
                         onClick={() => setShowCreateModal(true)}
-                        className="border-2 border-dashed border-blue-300 rounded-xl p-4 hover:bg-blue-50 transition-all cursor-pointer flex flex-col items-center justify-center min-h-[250px] group"
+                        className="border-2 border-dashed border-blue-300 rounded-[2rem] p-6 hover:bg-blue-50 transition-all cursor-pointer flex flex-col items-center justify-center min-h-[280px] group shadow-sm"
                     >
-                        <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">
                             <FaPlus />
                         </div>
-                        <h3 className="text-xl font-bold text-blue-800 text-center">
-                            Crear Nuevo Juego
-                        </h3>
-                        <p className="text-gray-500 text-center mt-2 text-sm">
-                            Haz clic aquí para elegir una plantilla.
-                        </p>
+                        <h3 className="text-2xl font-black text-blue-800 text-center">Crear Nuevo</h3>
                     </div>
 
                     {games.map((juego) => (
-                        <div
-                            key={juego.id}
-                            className="border-2 border-blue-100 rounded-xl p-4 hover:shadow-lg hover:border-blue-300 transition-all bg-blue-50 flex flex-col relative"
+                        <div 
+                            key={juego.id} 
+                            className="border-2 border-blue-50 rounded-[2rem] p-6 hover:shadow-2xl hover:border-blue-200 transition-all bg-white flex flex-col relative overflow-hidden group"
                         >
-                            <div className={`absolute top-3 left-3 px-3 py-1 text-xs font-bold rounded-full border ${getDifficultyColor(juego.difficulty)}`}>
+                            <div className={`absolute top-4 left-4 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-full border shadow-sm ${getDifficultyColor(juego.difficulty)}`}>
                                 {juego.difficulty}
                             </div>
                             
-                            <div className="absolute top-3 right-3 px-2 py-1 text-xs font-bold rounded bg-white text-gray-500 shadow-sm border border-gray-200">
+                            <div className="absolute top-4 right-4 px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded bg-slate-100 text-slate-500 border border-slate-200">
                                 {juego.type}
                             </div>
 
-                            <img
-                                src={juego.imageUrl}
-                                alt={juego.title}
-                                className="w-full h-24 object-contain mt-8 mb-3 opacity-80"
-                            />
+                            <div className="mt-10 mb-6 flex justify-center">
+                                <img 
+                                    src={juego.imageUrl} 
+                                    alt={juego.title} 
+                                    className="w-full h-28 object-contain" 
+                                />
+                            </div>
                             
-                            <h3 className="text-xl font-bold text-blue-800 text-center line-clamp-1">
+                            <h3 className="text-xl font-black text-slate-800 text-center line-clamp-1">
                                 {juego.title}
                             </h3>
                             
-                            <p className="text-gray-600 text-center mt-2 text-sm flex-grow line-clamp-2">
+                            <p className="text-slate-400 text-center mt-2 text-sm flex-grow line-clamp-2">
                                 {juego.description}
                             </p>
 
-                            <div className="flex justify-center gap-3 mt-4 pt-4 border-t border-blue-200/50">
+                            <div className="flex justify-center gap-3 mt-6 pt-6 border-t border-slate-50">
                                 <button 
-                                    onClick={(e) => { e.stopPropagation(); handleEdit(juego.id); }}
-                                    className="flex items-center gap-2 bg-white text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-200 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors"
+                                    onClick={(e) => { e.stopPropagation(); handleEdit(juego.id); }} 
+                                    className="flex items-center gap-2 bg-slate-50 text-slate-600 hover:bg-blue-600 hover:text-white border border-slate-100 px-4 py-2 rounded-xl text-xs font-black transition-all"
                                 >
-                                    <FaEdit /> Editar
+                                    <FaEdit /> EDITAR
                                 </button>
                                 <button 
-                                    onClick={(e) => { e.stopPropagation(); handleDelete(juego.id); }}
-                                    className="flex items-center gap-2 bg-white text-red-500 hover:bg-red-500 hover:text-white border border-red-200 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors"
+                                    onClick={(e) => { e.stopPropagation(); handleDelete(juego.id); }} 
+                                    className="flex items-center gap-2 bg-slate-50 text-red-500 hover:bg-red-500 hover:text-white border border-slate-100 px-4 py-2 rounded-xl text-xs font-black transition-all"
                                 >
-                                    <FaTrash /> Borrar
+                                    <FaTrash /> BORRAR
                                 </button>
                             </div>
                         </div>
@@ -152,9 +137,9 @@ export default function GameHubView() {
             )}
 
             {showCreateModal && (
-                <TemplateSelectorModal 
-                    onClose={() => setShowCreateModal(false)}
-                    onSelect={handleSelectTemplate}
+                <TemplateSelector 
+                    onClose={() => setShowCreateModal(false)} 
+                    onSelect={handleSelectTemplate} 
                 />
             )}
         </div>

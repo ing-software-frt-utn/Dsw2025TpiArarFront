@@ -18,6 +18,7 @@ function validPassword(text: string): [string,boolean][] {
         [{ '.*[a-z].*': /^(?=.*[a-z]).*$/ }, "Debe contener al menos una letra minúscula."],
         [{ '.*[A-Z].*': /^(?=.*[A-Z]).*$/ }, "Debe contener al menos una letra mayúscula."],
         [{ '.*\\d.*': /^(?=.*\d).*$/ }, "Debe contener al menos un número."],
+        [{ '.*[!@#$%^&*(),.?":{}|<>].*': /^(?=.*[!@#$%^&*(),.?":{}|<>]).*$/ }, "Debe contener al menos un carácter especial."],
         [{ '.{8,}': /^.{8,}$/ }, "Debe tener al menos 8 caracteres de longitud."],
         [{ '.*\\s.*': /^(?!.*\s).*$/ }, "No debe contener espacios."]
     ];

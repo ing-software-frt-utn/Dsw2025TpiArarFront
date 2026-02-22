@@ -3,40 +3,65 @@ import { User, UserRegister } from "../types/auth";
 
 const authApi = `api/auth`;
 
-// --- Helper para errores de conexión ---
+// --- Helper para errores de conexión y depuración detallada ---
 const handleConnectionError = (error: any, context: string) => {
-  console.error(`Error en ${context}:`, error);
-  if (error.code === "ERR_NETWORK" || !error.response) {
-    console.error(`🚨 NO SE ENCONTRÓ EL SERVIDOR (${context}) 🚨`);
-    console.error("👉 Verifique que el Backend (.NET) esté corriendo en el puerto correcto.");
-    console.error("👉 Verifique que la URL en el .env del Frontend sea la correcta.");
+  console.error(`--- DEBUG ERROR EN ${context.toUpperCase()} ---`);
+  
+  if (error.response) {
+    // El servidor respondió con un código fuera del rango 2xx
+    const serverData = error.response.data;
+    console.error("Status:", error.response.status);
+    console.error("Data del servidor:", serverData);
+
+    // Extraemos el mensaje más detallado posible
+    // .NET suele enviar errores en 'detail', 'title' o un objeto 'errors'
+    const detailedMessage = 
+      serverData?.detail || 
+      serverData?.message || 
+      serverData?.title ||
+      (serverData?.errors ? JSON.stringify(serverData.errors) : null);
+
+    if (detailedMessage) {
+      throw new Error(detailedMessage);
+    }
+  } else if (error.request) {
+    // La petición se hizo pero no hubo respuesta (CORS o Servidor caído)
+    console.error("No se recibió respuesta del servidor. Revisa CORS o si el puerto 5073 está abierto.");
     throw new Error("No se pudo conectar con el servidor. ¿Está encendido el Backend?");
+  } else {
+    // Error al configurar la petición
+    console.error("Error de configuración:", error.message);
   }
+
   throw error;
 };
 
 // --- Login Normal (REAL) ---
 export const logIn = async (user: User) => {
   try {
-    const response = await instance.post(`${authApi}/login`, user);
+    const response = await instance.post(`/${authApi}/login`, user);
     return response.data; 
   } catch (error: any) {
     handleConnectionError(error, "login");
   }
 };
 
-// --- Registro Normal (REAL) ---
+// --- Registro de Estudiante (REAL) ---
 export const signUp = async (user: UserRegister) => {
   try {
+    // Aseguramos que los nombres de las propiedades coincidan exactamente con lo que espera el DTO de .NET
     const payloadParaElBackend = {
-      Email: user.email,
-      Password: user.password,
-      Name: user.name,
-      Lastname: user.lastName,      
-      Dateofbirth: user.birthDate,  
-      Username: user.email         
+      email: user.email,
+      password: user.password,
+      name: user.name,
+      lastname: user.lastName,      
+      dateofbirth: user.birthDate,  
+      username: user.email         
     };
-    const response = await instance.post(`api/students/register`, payloadParaElBackend);
+    
+    console.log("Enviando Payload de Registro:", payloadParaElBackend);
+    
+    const response = await instance.post(`/api/students/register`, payloadParaElBackend);
     return response.data;
   } catch (error: any) {
     handleConnectionError(error, "registro");
@@ -46,8 +71,7 @@ export const signUp = async (user: UserRegister) => {
 // --- Login con Google (REAL) ---
 export const googleLogin = async (idToken: string) => {
   try {
-    console.log("Enviando token Google al backend para validación...");
-    const response = await instance.post(`${authApi}/google-login`, { 
+    const response = await instance.post(`/${authApi}/google-login`, { 
       idToken: idToken 
     });
     return response.data;
@@ -86,7 +110,7 @@ export const _register = async (credentials: any): Promise<any> => {
     console.error("Error en registro legacy:", error);
     return {
       ok: false,
-      message: "⚠️ Error Crítico: No se pudo conectar con el servidor. Verifique la conexión.",
+      message: "⚠️ Error Crítico: No se pudo conectar con el servidor.",
     };
   }
 };
@@ -109,7 +133,7 @@ export const _login = async (credentials: { Email: string; Password: string; }) 
     console.error("Error en login legacy:", error);
     return {
       ok: false,
-      message: "⚠️ Error Crítico: No se pudo conectar con el servidor. Verifique la conexión.",
+      message: "⚠️ Error Crítico: No se pudo conectar con el servidor.",
     };
   }
 };

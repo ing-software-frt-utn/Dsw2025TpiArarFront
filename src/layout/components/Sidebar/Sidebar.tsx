@@ -5,7 +5,40 @@ import Button from "../../../shared/components/Button";
 function Sidebar() {
   const navigate = useNavigate();
 
-  const userRole: "professor" | "student" = "professor";
+  const getRoleFromToken = (): "professor" | "student" => {
+    const token = localStorage.getItem("token");
+    if (!token) return "student";
+
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        window.atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+
+      const decoded = JSON.parse(jsonPayload);
+      
+      const role = 
+        decoded.role || 
+        decoded.Role || 
+        decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+
+      return (
+        role === "Professor" || 
+        role === "profesor" || 
+        role === "professor" || 
+        role === "Teacher" || 
+        role === "teacher"
+      ) ? "professor" : "student";
+    } catch (error) {
+      return "student";
+    }
+  };
+
+  const userRole = getRoleFromToken();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -32,7 +65,7 @@ function Sidebar() {
         <Button
           label="Juegos"
           imgSrc={<FaGamepad className="mr-3 text-lg" />}
-          onClick={() => navigate("/profesor/gameHub")} 
+          onClick={() => navigate("/juegos")} 
           className="w-full flex items-center justify-start hover:bg-violet-50 hover:text-violet-600 text-gray-700 font-medium px-4 py-3 rounded-lg transition-colors"
         />
 
