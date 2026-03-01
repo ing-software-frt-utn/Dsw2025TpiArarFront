@@ -1,128 +1,146 @@
 import { instance } from "../../../shared/api/axiosInstance";
+import { Classroom, PublishGameRequest, Topic, Student } from "../types/classroom.types";
 
 const classroomApi = `api/classroom`;
+const studentApi = `api/students`;
 
-// --- Helper para errores de conexión (Siguiendo tu patrón de auth) ---
-const handleConnectionError = (error: any, context: string) => {
-  console.error(`--- DEBUG ERROR EN ${context.toUpperCase()} ---`);
-  
+function handleConnectionError(error: any, context: string): never {
   if (error.response) {
     const serverData = error.response.data;
-    console.error("Status:", error.response.status);
-    console.error("Data del servidor:", serverData);
-
     const detailedMessage = 
       serverData?.detail || 
       serverData?.message || 
       serverData?.title ||
       (serverData?.errors ? JSON.stringify(serverData.errors) : null);
-
-    if (detailedMessage) {
-      throw new Error(detailedMessage);
-    }
+    if (detailedMessage) throw new Error(detailedMessage);
   } else if (error.request) {
-    console.error("No se recibió respuesta del servidor. Revisa CORS o si el puerto del Backend está abierto.");
-    throw new Error("No se pudo conectar con el servidor. ¿Está encendido el Backend?");
+    throw new Error("No se pudo conectar con el servidor.");
   }
-  
   throw error;
+}
+
+function normalizeList<T>(data: any): T[] {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if (data.$values && Array.isArray(data.$values)) return data.$values;
+  return [];
+}
+
+export const getAllStudents = async (): Promise<Student[]> => {
+  try {
+    const response = await instance.get(`/${studentApi}`);
+    return normalizeList<Student>(response.data);
+  } catch (error: any) {
+    return handleConnectionError(error, "getAllStudents");
+  }
 };
 
-// --- Obtener clases del profesor (REAL) ---
-export const getTeacherClassrooms = async () => {
+export const getStudentClassrooms = async (): Promise<Classroom[]> => {
+  try {
+    const response = await instance.get(`/${studentApi}/classes`);
+    return normalizeList<Classroom>(response.data);
+  } catch (error: any) {
+    return handleConnectionError(error, "getStudentClassrooms");
+  }
+};
+
+export const getTeacherClassrooms = async (): Promise<Classroom[]> => {
   try {
     const response = await instance.get(`/${classroomApi}/classes`);
-    return response.data;
+    return normalizeList<Classroom>(response.data);
   } catch (error: any) {
-    handleConnectionError(error, "getTeacherClassrooms");
+    return handleConnectionError(error, "getTeacherClassrooms");
   }
 };
 
-// --- Crear aula (Teacher) ---
-export const createClassroom = async (name: string, description: string) => {
+export const createClassroom = async (name: string, description: string): Promise<Classroom> => {
   try {
     const response = await instance.post(`/${classroomApi}/class`, { name, description });
     return response.data;
   } catch (error: any) {
-    handleConnectionError(error, "createClassroom");
+    return handleConnectionError(error, "createClassroom");
   }
 };
 
-// --- Unirse a aula (Student) ---
-export const joinClassroom = async (accessCode: number) => {
+export const joinClassroom = async (accessCode: number): Promise<any> => {
   try {
     const response = await instance.post(`/${classroomApi}/join/${accessCode}`);
     return response.data;
   } catch (error: any) {
-    handleConnectionError(error, "joinClassroom");
+    return handleConnectionError(error, "joinClassroom");
   }
 };
 
-// --- Detalle de aula ---
-export const getClassroomById = async (id: string) => {
+export const getClassroomById = async (id: string): Promise<Classroom> => {
   try {
     const response = await instance.get(`/${classroomApi}/class/${id}`);
     return response.data;
   } catch (error: any) {
-    handleConnectionError(error, "getClassroomById");
+    return handleConnectionError(error, "getClassroomById");
   }
 };
 
-// --- Actualizar aula ---
-export const updateClassroom = async (id: string, name: string, description: string) => {
+export const getStudentsByClassroom = async (id: string): Promise<Student[]> => {
+  try {
+    const response = await instance.get(`/${classroomApi}/${id}/students`);
+    return normalizeList<Student>(response.data);
+  } catch (error: any) {
+    if (error.response?.status === 404) return [];
+    return handleConnectionError(error, "getStudentsByClassroom");
+  }
+};
+
+export const updateClassroom = async (id: string, name: string, description: string): Promise<any> => {
   try {
     const response = await instance.put(`/${classroomApi}/class/${id}`, { name, description });
     return response.data;
   } catch (error: any) {
-    handleConnectionError(error, "updateClassroom");
+    return handleConnectionError(error, "updateClassroom");
   }
 };
 
-// --- Eliminar aula ---
-export const deleteClassroom = async (id: string) => {
+export const deleteClassroom = async (id: string): Promise<any> => {
   try {
     const response = await instance.delete(`/${classroomApi}/class/${id}`);
     return response.data;
   } catch (error: any) {
-    handleConnectionError(error, "deleteClassroom");
+    return handleConnectionError(error, "deleteClassroom");
   }
 };
 
-// --- Publicar juego en aula ---
-export const publishGame = async (classroomId: string, gameData: any) => {
+export const publishGame = async (classroomId: string, gameData: PublishGameRequest): Promise<any> => {
   try {
     const response = await instance.post(`/${classroomApi}/${classroomId}/publish-game`, gameData);
     return response.data;
   } catch (error: any) {
-    handleConnectionError(error, "publishGame");
+    return handleConnectionError(error, "publishGame");
   }
 };
 
-// --- Obtener juegos publicados de un aula ---
-export const getPublishedGames = async (classroomId: string) => {
+export const getPublishedGames = async (classroomId: string): Promise<any[]> => {
   try {
     const response = await instance.get(`/${classroomApi}/${classroomId}/publish-game`);
-    return response.data;
+    return normalizeList<any>(response.data);
   } catch (error: any) {
-    handleConnectionError(error, "getPublishedGames");
+    if (error.response?.status === 404 || error.response?.status === 204) return [];
+    return handleConnectionError(error, "getPublishedGames");
   }
 };
 
-// --- Tópicos (Rutas absolutas como definiste en el Controller) ---
-export const getTopics = async () => {
+export const getTopics = async (): Promise<Topic[]> => {
   try {
     const response = await instance.get(`/topics`);
-    return response.data;
+    return normalizeList<Topic>(response.data);
   } catch (error: any) {
-    handleConnectionError(error, "getTopics");
+    return handleConnectionError(error, "getTopics");
   }
 };
 
-export const createTopic = async (topicData: { name: string, description: string }) => {
+export const createTopic = async (topicData: { name: string, description: string }): Promise<Topic> => {
   try {
     const response = await instance.post(`/topic`, topicData);
     return response.data;
   } catch (error: any) {
-    handleConnectionError(error, "createTopic");
+    return handleConnectionError(error, "createTopic");
   }
 };

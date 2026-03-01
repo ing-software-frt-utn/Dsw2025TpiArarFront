@@ -1,121 +1,176 @@
 import { instance } from "../../../../shared/api/axiosInstance";
-import { MOCK_HANGMAN_DATA } from "./mockHangman";
 
-export interface HangmanEvent {
-  type: "LetterHitEvent" | "LetterMissedEvent" | "GameWonEvent" | "GameLostEvent";
-  letter?: string;
-  maskedWord: string; 
+const hangmanApi = `api/games/hangman`;
+const gamesApi = `api/games`;
+const classroomApi = `api/classroom`;
+
+export interface Word {
+  id: string;
+  text: string;
+  hint: string;
+  level: number;
+  topicId: string;
 }
 
-export interface GameInitResponse {
+export interface Topic {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface HangmanResponse {
+  maskedWord: string;
+  attempt: "Hit" | "Missed" | "Used";
+  gameResult: "Won" | "Lost" | "Continue"; 
+  currentAttempts: number;
+}
+
+export interface GameMetadata {
   id: string;
   title: string;
   description: string;
-  hint: string;
-  remainingAttempts: number;
-  status: string;
-  maskedWord?: string; 
+  instructions: string;
 }
 
-/*
-// codigo que se usara cuando funque correctamente el back end
+export interface GameInitResponse {
+  maskedWord: string;
+  metadata: GameMetadata;
+}
 
-export const startGame = async (gameId: string): Promise<GameInitResponse> => {
-  try {
-    await instance.post(`/games/hangman/${gameId}`);
+function normalizeList<T>(data: any): T[] {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if (data.$values && Array.isArray(data.$values)) return data.$values;
+  return [];
+}
 
-    const gameInfoRes = await instance.get(`/games/${gameId}`);
-    const gameInfo = gameInfoRes.data;
-
-    const wordRes = await instance.get(`/games/hangman/${gameId}/masked-word`);
-    const initialMaskedWord = wordRes.data; 
-
-    return {
-      id: gameInfo.id || gameId,
-      title: gameInfo.title || "Ahorcado",
-      description: gameInfo.description || "",
-      hint: gameInfo.instructions || "Sin pistas", 
-      remainingAttempts: 6, 
-      status: "Started",
-      maskedWord: initialMaskedWord 
-    };
-  } catch (error) {
-    throw error;
-  }
+const GAME_RESULT_MAP: Record<number, HangmanResponse["gameResult"]> = {
+  0: "Won",
+  1: "Lost",
+  2: "Continue",
 };
 
-export const playTurn = async (gameId: string, letter: string): Promise<HangmanEvent[]> => {
-  const { data } = await instance.put<HangmanEvent[]>(`/games/hangman/${gameId}/${letter}`);
-  return data;
+const ATTEMPT_MAP: Record<number, HangmanResponse["attempt"]> = {
+  0: "Hit",
+  1: "Missed",
+  2: "Used",
 };
-*/
 
-// --- Mock temporal para testear UI ---
+function resolveEnum<T extends string>(
+  value: any,
+  map: Record<number, T>,
+  fallback: T
+): T {
+  if (typeof value === "string" && value.length > 0) return value as T;
+  if (typeof value === "number" && map[value] !== undefined) return map[value];
+  return fallback;
+}
 
-// Variables para mantener el estado de la simulación en memoria
-let mockGuessedLetters: string[] = [];
+
+export const createWord = async (wordData: {
+  text: string;
+  hint: string;
+  level: number;
+  topicId: string;
+}): Promise<string> => {
+  const response = await instance.post(`${hangmanApi}/words`, wordData);
+  return response.data;
+};
+
+export const getWords = async (params: {
+  topicId?: string;
+  difficulty?: string | number;
+}): Promise<Word[]> => {
+  let level = params.difficulty;
+  if (level === "EASY") level = 0;
+  if (level === "MEDIUM") level = 1;
+  if (level === "HARD") level = 2;
+
+  const url = params.topicId
+    ? `${hangmanApi}/words/${params.topicId}`
+    : `${hangmanApi}/words`;
+
+  const response = await instance.get(url, { params: { level } });
+  return normalizeList<Word>(response.data);
+};
+
+//gestion de topicos
+
+export const getTopics = async (): Promise<Topic[]> => {
+  const response = await instance.get(`${classroomApi}/topics`);
+  return normalizeList<Topic>(response.data);
+};
+
+export const createTopic = async (name: string, description: string = ""): Promise<Topic> => {
+  const response = await instance.post(`${classroomApi}/topic`, { name, description });
+  return response.data;
+};
 
 export const startGame = async (gameId: string): Promise<GameInitResponse> => {
-  await new Promise((r) => setTimeout(r, 500));
-
-  // Reseteo la memoria del mock al iniciar juego
-  mockGuessedLetters = [];
-
-  // Creo la máscara inicial con guiones (ej: "_ _ _ _ _ _ _ _ _")
-  const initialMasked = MOCK_HANGMAN_DATA.targetWord.split('').map(() => '_').join(' ');
+  const [wordRes, metaRes] = await Promise.all([
+    instance.post(`${hangmanApi}/${gameId}`),
+    instance.get(`${gamesApi}/${gameId}`),
+  ]);
+  const { maskedWord, hint } = wordRes.data;
+  const d = metaRes.data;
 
   return {
-    id: gameId,
-    title: "Ahorcado de Prueba",
-    description: "Modo simulación activado",
-    hint: MOCK_HANGMAN_DATA.hint, 
-    remainingAttempts: 6,
-    status: "Started",
-    maskedWord: initialMasked
+    maskedWord: maskedWord || "",
+    metadata: {
+      id: d.id ?? d.Id ?? "",
+      title: d.title ?? d.Title ?? "AHORCADO",
+      description: d.description ?? d.Description ?? "",
+      instructions: hint ?? d.instructions ?? d.Instructions ?? d.description ?? d.Description ?? "",
+    },
   };
 };
 
-export const playTurn = async (gameId: string, letter: string): Promise<HangmanEvent[]> => {
-  await new Promise((r) => setTimeout(r, 300));
+export const playTurn = async (gameId: string, letter: string): Promise<HangmanResponse> => {
+  const response = await instance.put(`${hangmanApi}/${gameId}`, { letter });
+  const d = response.data;
 
-  const upperLetter = letter.toUpperCase();
-  const targetWord = MOCK_HANGMAN_DATA.targetWord;
-  
-  // Guardo la letra en la memoria del mock
-  if (!mockGuessedLetters.includes(upperLetter)) {
-    mockGuessedLetters.push(upperLetter);
-  }
+  const gameResult = resolveEnum(
+    d.gameResult ?? d.GameResult,
+    GAME_RESULT_MAP,
+    "Continue"
+  );
 
-  // Calculo com se ve la palabra ahora
-  const currentMaskedWord = targetWord.split('')
-    .map(char => mockGuessedLetters.includes(char) ? char : '_')
-    .join(' ');
+  const attempt = resolveEnum(
+    d.attempt ?? d.Attempt,
+    ATTEMPT_MAP,
+    "Missed"
+  );
 
-  const events: HangmanEvent[] = [];
+  return {
+    maskedWord: d.maskedWord ?? d.MaskedWord ?? "",
+    attempt,
+    gameResult,
+    currentAttempts: d.currentAttempts ?? d.CurrentAttempts ?? d.currentAttempt ?? d.CurrentAttempt ?? 0,
+  };
+};
 
-  if (targetWord.includes(upperLetter)) {
-    //Si acerto el flaco, agrego evento de acierto con la palabra actualizada
-    events.push({ 
-      type: "LetterHitEvent", 
-      letter: upperLetter, 
-      maskedWord: currentMaskedWord 
-    });
+export const createHangmanGame = async (payload: any): Promise<any> => {
+  const response = await instance.post(`${hangmanApi}`, payload);
+  return response.data;
+};
 
-    // 2. Verifico si ya completó toda la palabra (no quedan guiones)
-    if (!currentMaskedWord.includes('_')) {
-      events.push({ 
-        type: "GameWonEvent", 
-        maskedWord: currentMaskedWord 
-      });
-    }
-  } else {
-    // Si erró
-    events.push({ 
-      type: "LetterMissedEvent", 
-      letter: upperLetter, 
-      maskedWord: currentMaskedWord 
-    });
-  }
+export const publishGameToClassroom = async (
+  classId: string,
+  gameId: string,
+  topicId: string
+): Promise<any> => {
+  const payload = { gameId, topicId };
+  const response = await instance.post(`${classroomApi}/${classId}/publish-game`, payload);
+  return response.data;
+};
 
-  return events;
+export const saveAhorcaditoGame = async (payload: any): Promise<any> => {
+  const { selectedClassId, gameId, topicId } = payload;
+  if (!selectedClassId) throw new Error("ID de clase no proporcionado.");
+  return publishGameToClassroom(selectedClassId, gameId, topicId);
+};
+
+export const getTeacherGames = async (): Promise<any[]> => {
+  const response = await instance.get(gamesApi);
+  return normalizeList<any>(response.data);
 };

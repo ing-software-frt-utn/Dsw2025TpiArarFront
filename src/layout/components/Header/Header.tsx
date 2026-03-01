@@ -64,7 +64,7 @@ function Header() {
 
       <div className="flex items-center gap-4">
         <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-violet-100 text-violet-600 border border-violet-200">
-          DEBUG: {role}
+          {role}
         </span>
         <UserProfile name={name} imgSrc={avatar} />
       </div>

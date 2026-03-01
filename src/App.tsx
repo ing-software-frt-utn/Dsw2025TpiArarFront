@@ -3,7 +3,8 @@ import LoginPage from "./modules/auth/pages/LoginPage";
 import RegisterPage from "./modules/auth/pages/RegisterPage";
 import { AuthProvider } from "./modules/auth/context/AuthProvider";
 import Base from "./layout/BaseLayout/Base";
-import ClassDetailView from "./modules/classes/pages/ClassDetail";
+import ClassDetailView from "./modules/classes/pages/ClassDetailView";
+import StudentClassView from "./modules/classes/pages/StudentClassView.tsx"; 
 import ClassCreatorView from "./modules/classes/pages/classCreatorView"; 
 import DashboardStudentView from "./modules/dashboard/pages/StudentDashboard";
 import ProfessorDashboard from "./modules/dashboard/pages/ProfessorDashboard"; 
@@ -16,22 +17,23 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          {/* Rutas Públicas */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           
           <Route element={<Base />}>
             <Route path="/alumno" element={<DashboardStudentView />} />
             <Route path="/profesor" element={<ProfessorDashboard />} />
-            <Route path="/clases/:id" element={<ClassDetailView />} />
             <Route path="/clases/crear" element={<ClassCreatorView />} />
+            <Route path="/clases/:id" element={<ClassDetailView />} />
+            <Route path="/alumno/clases/:id" element={<StudentClassView />} />
             <Route path="/juegos" element={<GameHubView />} />
             <Route path="/juegos/nuevo" element={<GameCreatorView />} />
-            
             <Route path="/profesor/juegos" element={<Navigate to="/juegos" replace />} />
             <Route path="/profesor/juegos/nuevo" element={<Navigate to="/juegos/nuevo" replace />} />
           </Route>
-
           <Route path="/jugar/:gameId" element={<GameView />} />
+          <Route path="/jugar/:gameId/test" element={<GameView />} />
           <Route path="*" element={<LoginPage />} />
         </Routes>
       </Router>

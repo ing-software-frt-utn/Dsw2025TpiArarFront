@@ -34,16 +34,8 @@ function LoginTemplate() {
       const decoded = JSON.parse(jsonPayload);
       const role = decoded.role || decoded.Role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
       
-      if (
-        role === "Professor" || 
-        role === "profesor" || 
-        role === "professor" || 
-        role === "Teacher" || 
-        role === "teacher"
-      ) {
-        return "/profesor";
-      }
-      return "/alumno";
+      const isTeacher = ["Professor", "profesor", "professor", "Teacher", "teacher"].includes(role);
+      return isTeacher ? "/profesor" : "/alumno";
     } catch (e) {
       return "/alumno";
     }
@@ -58,7 +50,7 @@ function LoginTemplate() {
       
       if (tokenRecibido) {
         localStorage.setItem("token", tokenRecibido); 
-        setSatisfactorio("Inicio de sesión exitoso");
+        setSatisfactorio("¡Ingreso Exitoso!");
         
         const nextRoute = getTargetRoute(tokenRecibido);
         setTimeout(() => {
@@ -68,7 +60,7 @@ function LoginTemplate() {
         setError("Error: No se recibió un token válido.");
       }
     } catch (err: any) {
-      setError(err.message || "Credenciales inválidas o error de conexión con el servidor.");
+      setError(err.message || "Credenciales inválidas.");
     } finally {
       setIsLoading(false);
     }
@@ -87,13 +79,12 @@ function LoginTemplate() {
       if (token) {
         localStorage.setItem("token", token);
         const userName = response.user?.name || "Usuario"; 
-        setSatisfactorio(`¡Bienvenido ${userName}!`);
+        setSatisfactorio(`¡Bienvenido, ${userName}!`);
 
         const nextRoute = getTargetRoute(token);
         setTimeout(() => {
             navigate(nextRoute); 
         }, 1500);
-
       } else {
         setError("Error en inicio de sesión con Google.");
       }
@@ -104,33 +95,31 @@ function LoginTemplate() {
     }
   };
 
-  const handleMockLogin = () => {
-    setIsLoading(true);
-    localStorage.setItem("token", "fake-token-desarrollo-12345");
-    setSatisfactorio("Inicio de sesión simulado (Modo Desarrollo)");
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate("/profesor");
-    }, 1500);
-  };
-
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-transparent">
+    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-transparent font-sans">
       {isLoading && <LoadingOverlay message="Verificando credenciales..." />}
-      
+      {satisfactorio && (
+        <div className="fixed inset-0 z-10000 flex items-center justify-center bg-white/60 backdrop-blur-md">
+          <div className="bg-white p-10 rounded-[3rem] shadow-2xl border border-violet-100 flex flex-col items-center">
+            <div className="text-7xl mb-4">✅</div>
+            <p className="text-2xl font-black text-gray-800 uppercase tracking-tight text-center">
+              {satisfactorio}
+            </p>
+            <p className="text-violet-500 font-bold text-xs mt-2 uppercase tracking-widest opacity-60">Redirigiendo...</p>
+          </div>
+        </div>
+      )}
+
       <div className="bg-white rounded-[2.5rem] p-6 md:p-10 shadow-2xl w-full max-w-sm border border-gray-100 flex flex-col relative my-auto">
         <div className="flex flex-col items-center mb-6">
           <img className="h-14 w-auto mb-2 drop-shadow-sm" src={logo} alt="Logo" />
-          <h1 className="text-3xl font-black text-gray-800 tracking-tight text-center">
+          <h1 className="text-3xl font-black text-gray-800 tracking-tight text-center uppercase">
             Bienvenido
           </h1>
           <div className="h-1 w-10 bg-violet-500 rounded-full mt-1"></div>
         </div>
         
-        <Form
-          className="flex flex-col gap-4 w-full"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <Form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-3">
             <TextField
               className="w-full px-5 py-3 border-2 border-gray-50 rounded-2xl bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-violet-500/10 focus:border-violet-500 outline-none transition-all duration-300 font-medium"
@@ -138,7 +127,7 @@ function LoginTemplate() {
               id="email"
               label="Email"
               placeholder="tu@email.com"
-              disabled={isLoading}
+              disabled={isLoading || !!satisfactorio}
               {...register("email", { required: true })}
             />
             <TextField
@@ -147,15 +136,15 @@ function LoginTemplate() {
               id="password"
               label="Contraseña"
               placeholder="********"
-              disabled={isLoading}
+              disabled={isLoading || !!satisfactorio}
               {...register("password", { required: true })}
             />
           </div>
 
           <div className="flex flex-col gap-3 mt-1">
             <button
-              disabled={isLoading}
-              className="w-full py-3.5 bg-violet-600 hover:bg-violet-700 disabled:bg-violet-300 text-white font-bold rounded-[1.25rem] shadow-xl shadow-violet-200 transition-all active:scale-[0.98] text-lg"
+              disabled={isLoading || !!satisfactorio}
+              className="w-full py-3.5 bg-violet-600 hover:bg-violet-700 disabled:bg-violet-300 text-white font-bold rounded-[1.25rem] shadow-xl shadow-violet-200 transition-all active:scale-[0.98] text-lg uppercase"
               type="submit"
             >
               {isLoading ? "Entrando..." : "Entrar"}
@@ -185,25 +174,11 @@ function LoginTemplate() {
                 width="100%"
             />
           </div>
-
-          <div className="mt-4 pt-4 border-t border-gray-50 flex justify-center">
-            <button
-              type="button"
-              disabled={isLoading}
-              onClick={handleMockLogin}
-              className="text-[9px] bg-gray-50 text-gray-400 hover:bg-gray-100 py-1.5 px-6 rounded-full transition-colors font-black border border-gray-100 uppercase tracking-widest disabled:opacity-50"
-            >
-              🧪 Developer Mock Login
-            </button>
-          </div>
         </Form>
       </div>
 
-      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-2">
+      <div className="fixed bottom-6 right-6 z-9999">
         {error && <Popup message={error} onClose={() => setError("")} />}
-        {satisfactorio && (
-          <Popup message={satisfactorio} onClose={() => setSatisfactorio("")} />
-        )}
       </div>
     </div>
   );
