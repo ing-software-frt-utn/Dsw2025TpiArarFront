@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../../shared/components/Button";
 import LoadingOverlay from "../../../shared/components/LoadingOverlay";
 import { getTeacherClassrooms } from "../../classes/services/classService";
+// Importamos los mocks
+import { mockStudentClasses } from "../../classes/services/mockClasses";
 
 const FaPlus = () => (
   <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 448 512" height="1em" width="1em">
@@ -27,7 +29,6 @@ const DashboardProfessorView = () => {
   const [classrooms, setClassrooms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-
   const normalize = (data: any) => {
     if (!data) return [];
     if (Array.isArray(data)) return data;
@@ -40,7 +41,10 @@ const DashboardProfessorView = () => {
       setLoading(true);
       const data = await getTeacherClassrooms();
       const list = normalize(data);
-      setClassrooms(list);
+      
+      // JUNTAMOS LAS CLASES REALES CON LAS CLASES MOCKEADAS
+      setClassrooms([...list, ...mockStudentClasses]);
+      
     } catch (err) {
       console.error("Error al cargar las clases:", err);
     } finally {
@@ -91,7 +95,8 @@ const DashboardProfessorView = () => {
           const classId = clase.id || clase.Id;
           const className = clase.name || clase.Name;
           const classDesc = clase.description || clase.Description;
-          const code = clase.accessCode || clase.AccessCode;
+          // Agregamos "MOCK" como fallback por si la clase viene de mockStudentClasses
+          const code = clase.accessCode || clase.AccessCode || "MOCK"; 
           const students = normalize(clase.classroomStudents || clase.ClassroomStudents);
           const publishedGames = normalize(clase.publishedGames || clase.PublishedGames);
 

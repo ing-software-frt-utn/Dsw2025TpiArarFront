@@ -5,6 +5,8 @@ import Button from "../../../shared/components/Button";
 import LoadingOverlay from "../../../shared/components/LoadingOverlay";
 import Popup from "../../../shared/components/Popup";
 import { useStudentClassrooms, useClassActions } from "../../classes/hooks/useClasses";
+// Importamos las clases mockeadas
+import { mockStudentClasses } from "../../classes/services/mockClasses";
 
 const DashboardStudentView = () => {
   const navigate = useNavigate();
@@ -13,6 +15,9 @@ const DashboardStudentView = () => {
   
   const [showJoinModal, setShowJoinModal] = useState<boolean>(false);
   const [accessCode, setAccessCode] = useState<string>("");
+
+  // Combinamos las clases reales con las mockeadas
+  const allClassrooms = [...classrooms, ...mockStudentClasses];
 
   const handleJoinClass = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +29,7 @@ const DashboardStudentView = () => {
       setAccessCode("");
       refresh();
     } catch (err) {
+      // El error se maneja a través de joinError en el hook
     }
   };
 
@@ -59,7 +65,7 @@ const DashboardStudentView = () => {
         />
       </div>
 
-      {classrooms.length === 0 && !loading ? (
+      {allClassrooms.length === 0 && !loading ? (
         <div className="max-w-2xl mx-auto text-center py-24 bg-white/50 rounded-[3rem] border-2 border-dashed border-indigo-200">
           <div className="text-6xl mb-6">📭</div>
           <p className="text-xl text-indigo-400 font-bold italic px-10">
@@ -68,10 +74,9 @@ const DashboardStudentView = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {classrooms.map((clase) => (
+          {allClassrooms.map((clase) => (
             <div
               key={clase.id}
-              // FIX: Navegamos a la ruta de vista de clase del alumno
               onClick={() => navigate(`/alumno/clases/${clase.id}`)}
               className="bg-white rounded-[2.5rem] shadow-xl overflow-hidden hover:scale-105 transition-all cursor-pointer border-4 border-transparent hover:border-indigo-300 flex flex-col group"
             >

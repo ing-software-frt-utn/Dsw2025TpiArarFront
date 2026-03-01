@@ -11,6 +11,7 @@ import Button from "../../../shared/components/Button";
 import LoadingOverlay from "../../../shared/components/LoadingOverlay";
 import Popup from "../../../shared/components/Popup";
 import { useClassroomDetailStudent } from "../hooks/useClasses";
+import { mockClassroomDetails } from "../services/mockClasses";
 
 const HangmanIcon = ({ className }: { className?: string }) => (
   <img 
@@ -25,10 +26,13 @@ const StudentClassView = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { classroom, games, loading, error, refresh } = useClassroomDetailStudent(id);
+  const { classroom: realClassroom, games: realGames, loading, error, refresh } = useClassroomDetailStudent(id);
+  const isMock = id === "01" || id === "02";
+  const classroom = isMock ? mockClassroomDetails[id!].classroom : realClassroom;
+  const games = isMock ? mockClassroomDetails[id!].games : realGames;
 
   const groupedGames = useMemo(() => {
-    if (!games || games.length === 0) return {};
+    if (!games || (Array.isArray(games) && games.length === 0)) return {};
     const gamesList = Array.isArray(games) ? games : [games];
     
     const filtered = gamesList.filter((g: any) => {
@@ -44,10 +48,6 @@ const StudentClassView = () => {
     }, {});
   }, [games, searchTerm]);
 
-  /**
-   * handlePlay: Corrección de ID para evitar Error 500.
-   * Usamos 'gameId' (FK al juego real) en lugar de 'id' (PK de la publicación).
-   */
   const handlePlay = (game: any) => {
     const realGameId = game.gameId || game.GameId || game.id || game.Id;
     const type = (game.type || game.Type || "").toLowerCase();
@@ -60,11 +60,12 @@ const StudentClassView = () => {
 
   const parseDescription = (desc?: string) => {
     if (!desc || !desc.includes("-")) return { nivel: desc || "N/A", curso: "N/A" };
+    // Ahora desc es "2do-A" o "3ro-B"
     const [nivel, curso] = desc.split("-");
     return { nivel, curso };
   };
 
-  if (loading) return <LoadingOverlay message="Sincronizando tus juegos..." />;
+  if (loading && !isMock) return <LoadingOverlay message="Sincronizando tus juegos..." />;
 
   const classroomName = classroom?.name ?? (classroom as any)?.Name ?? "Mi Clase";
   const classroomDesc = classroom?.description ?? (classroom as any)?.Description;
@@ -85,16 +86,16 @@ const StudentClassView = () => {
         <div className="w-24 h-24 bg-indigo-600 text-white rounded-[2.5rem] flex items-center justify-center shadow-lg transform -rotate-3 transition-transform hover:rotate-0 duration-500 text-5xl">
           🎮
         </div>
-        <div className="flex-grow text-center md:text-left">
+        <div className="grow text-center md:text-left">
           <h1 className="text-4xl font-black text-slate-800 uppercase tracking-tight mb-2 leading-none">
             {classroomName}
           </h1>
           <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
             <span className="bg-indigo-50 text-indigo-700 border border-indigo-100 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider">
-              NIVEL: {nivel}
+              AÑO: {nivel}
             </span>
             <span className="bg-indigo-50 text-indigo-700 border border-indigo-100 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider">
-              CURSO: {curso}
+              DIVISIÓN: {curso}
             </span>
           </div>
         </div>
@@ -132,16 +133,26 @@ const StudentClassView = () => {
                 {topicGames.map((game: any) => {
                   const gTitle = game.title ?? game.Title ?? "Sin Título";
                   const gLevel = game.level ?? game.Level ?? "Media";
-                  const gImg = game.imageUrl || game.ImageUrl; 
+                  const type = (game.type || game.Type || "").toLowerCase();
 
                   return (
-                    <div key={Math.random()} className="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden hover:shadow-xl transition-all group flex flex-col">
+                    <div key={game.id || Math.random()} className="bg-white rounded-4x1 shadow-sm border border-slate-200 overflow-hidden hover:shadow-xl transition-all group flex flex-col">
                       <div className="h-2 w-full bg-indigo-500 group-hover:bg-indigo-600 transition-colors"></div>
                       <div className="p-6 flex-1 flex flex-col">
                         <div className="flex justify-between items-start mb-6">
                           <div className="w-16 h-16 flex items-center justify-center">
-                            {gImg ? (
-                              <img src={gImg} alt={gTitle} className="w-full h-full object-contain filter drop-shadow-md group-hover:scale-110 transition-transform duration-300" />
+                            {type === "memotest" ? (
+                              <img 
+                                src="https://cdn-icons-png.flaticon.com/512/3965/3965108.png" 
+                                alt="Icono Memotest" 
+                                className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-300" 
+                              />
+                            ) : type === "trivia" ? (
+                              <img 
+                                src="/trivia.webp" 
+                                alt="Icono Trivia" 
+                                className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-300" 
+                              />
                             ) : (
                               <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center p-2 group-hover:scale-110 transition-transform duration-300">
                                 <HangmanIcon />
@@ -153,7 +164,7 @@ const StudentClassView = () => {
                           </span>
                         </div>
                         <h3 className="text-lg font-black text-slate-800 mb-2 uppercase tracking-tight leading-tight group-hover:text-indigo-600 transition-colors line-clamp-2">{gTitle}</h3>
-                        <p className="text-slate-500 text-[11px] leading-relaxed mb-6 flex-grow line-clamp-2 italic font-medium">
+                        <p className="text-slate-500 text-[11px] leading-relaxed mb-6 grow line-clamp-2 italic font-medium">
                           {game.description ?? (game as any).Description ?? "¡Es momento de jugar y aprender!"}
                         </p>
                         <Button
@@ -178,7 +189,7 @@ const StudentClassView = () => {
           </div>
         )}
       </div>
-      {error && <Popup message={error} onClose={refresh} />}
+      {error && !isMock && <Popup message={error} onClose={refresh} />}
     </div>
   );
 };
